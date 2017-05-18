@@ -31,6 +31,6 @@ interface ILoc {
 }
 `;
 
-it('works 2 levels of depth', function() {
+it('works when prop name + members match', function() {
     expect(json2ts(json)).toEqual(expected.slice(1));
 });

@@ -1,5 +1,10 @@
 import * as ts from 'typescript';
 import {ParsedNode} from "./parser";
+import * as Immutable from 'immutable';
+
+const { Map, is, List, fromJS, OrderedSet} = Immutable;
+
+const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
 export interface InterfaceNode {
     name: string;
@@ -9,7 +14,7 @@ export interface InterfaceNode {
 
 export function transform(stack: ParsedNode[]): InterfaceNode[] {
 
-    const interfaceStack = [];
+    let interfaceStack = OrderedSet([]);
 
     const wrapper = [{
         kind: ts.SyntaxKind.ObjectLiteralExpression,
@@ -18,20 +23,25 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         body: stack
     }];
 
-    wrapper.forEach(walk);
+    const initial = getInterface(wrapper[0]);
+    push(initial);
 
-    return interfaceStack;
+    return interfaceStack.toJS();
 
-    function walk(node) {
-        switch(node.kind) {
-            case ts.SyntaxKind.ObjectLiteralExpression: {
-                const newInterface = getInterface(node);
-                interfaceStack.unshift(newInterface);
-            }
-        }
+    function push(newInterface: InterfaceNode): void {
+        interfaceStack = interfaceStack.add(fromJS(newInterface));
     }
 
-    function getInterface(node) {
+    // function walk(node) {
+    //     switch(node.kind) {
+    //         case ts.SyntaxKind.ObjectLiteralExpression: {
+    //             const newInterface = getInterface(node);
+    //             push(newInterface);
+    //         }
+    //     }
+    // }
+
+    function getInterface(node: ParsedNode): InterfaceNode {
         const newInterface = {
             name: 'I' + node.name[0].toUpperCase() + node.name.slice(1),
             original: node.name,
@@ -51,7 +61,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                 }
                 case ts.SyntaxKind.ObjectLiteralExpression: {
                     const newInterface = getInterface(node);
-                    interfaceStack.unshift(newInterface);
+                    push(newInterface);
 
                     return `${newInterface.original}: ${newInterface.name};`
                 }
@@ -61,5 +71,6 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         return members
     }
 }
+
 
 
