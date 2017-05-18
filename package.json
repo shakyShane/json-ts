@@ -1,7 +1,13 @@
 {
   "dependencies": {
-    "@types/node": "^7.0.18",
     "typescript": "^2.3.2"
   },
-  "main": "index.js"
+  "scripts": {
+    "test": "tsc && jest"
+  },
+  "main": "index.js",
+  "devDependencies": {
+    "@types/node": "^7.0.18",
+    "jest": "^20.0.3"
+  }
 }

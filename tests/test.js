@@ -1,4 +1,4 @@
-const {json2ts} = require('./');
+const {json2ts} = require('../');
 const assert = require('assert');
 
 const json = `{
@@ -32,4 +32,6 @@ interface ILoc {
 }
 `;
 
-assert.equal(json2ts(json), expected.slice(1));
+it('matches', function() {
+    expect(json2ts(json)).toEqual(expected.slice(1));
+});
