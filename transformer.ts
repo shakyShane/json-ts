@@ -14,8 +14,6 @@ export interface InterfaceNode {
 
 export function transform(stack: ParsedNode[]): InterfaceNode[] {
 
-    let interfaceStack = OrderedSet([]);
-
     const wrapper = [{
         kind: ts.SyntaxKind.ObjectLiteralExpression,
         _kind: 'ObjectLiteralExpression',
@@ -23,31 +21,27 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         body: stack
     }];
 
-    const initial = getInterface(wrapper[0]);
-    push(initial);
+    const initial = getInterfaces(wrapper);
 
-    return interfaceStack.toJS();
+    return initial.toJS().reverse();
 
-    function push(newInterface: InterfaceNode): void {
-        interfaceStack = interfaceStack.add(fromJS(newInterface));
-    }
-
-    // function walk(node) {
-    //     switch(node.kind) {
-    //         case ts.SyntaxKind.ObjectLiteralExpression: {
-    //             const newInterface = getInterface(node);
-    //             push(newInterface);
-    //         }
-    //     }
-    // }
-
-    function getInterface(node: ParsedNode): InterfaceNode {
-        const newInterface = {
+    function createOne(node: ParsedNode): InterfaceNode {
+        const thisMembers = getMembers(node.body);
+        return {
             name: 'I' + node.name[0].toUpperCase() + node.name.slice(1),
             original: node.name,
-            members: getMembers(node.body)
+            members: thisMembers
         };
-        return newInterface;
+    }
+
+    function getInterfaces(nodes: ParsedNode[]): InterfaceNode[] {
+        return nodes.reduce((acc, node) => {
+            if (node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
+                const other = getInterfaces(node.body);
+                return acc.concat(fromJS([createOne(node)]), other);
+            }
+            return acc;
+        }, OrderedSet([]));
     }
 
     function getMembers(stack): string[] {
@@ -60,9 +54,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                     return `${node.name}: number;`
                 }
                 case ts.SyntaxKind.ObjectLiteralExpression: {
-                    const newInterface = getInterface(node);
-                    push(newInterface);
-
+                    const newInterface = createOne(node);
                     return `${newInterface.original}: ${newInterface.name};`
                 }
 

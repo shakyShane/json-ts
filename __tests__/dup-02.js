@@ -7,8 +7,10 @@ const json = `{
     "age": 19
   },
   "admin": {
-    "name": "Shane",
-    "age": 20
+    "user": {
+      "name": "Shane",
+      "age": 20
+    }
   }
 }
 `;
@@ -16,7 +18,16 @@ const json = `{
 const expected = `
 interface IRootObject {
   user: IUser;
-  admin: IUser;
+  admin: IAdmin;
+}
+
+interface IUser {
+  name: string;
+  age: number;
+}
+
+interface IAdmin {
+  user: IUser;
 }
 `;
 
