@@ -1,8 +1,10 @@
 import * as ts from 'typescript';
 import {ParsedNode} from "./parser";
 import * as Immutable from 'immutable';
+import {startCase, toLower} from 'lodash';
+import {OrderedSet} from "immutable";
 
-const { Map, is, List, fromJS, OrderedSet, Set} = Immutable;
+const { Map, is, List, fromJS, Set} = Immutable;
 
 const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
@@ -34,7 +36,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         };
     }
 
-    function getInterfaces(nodes: ParsedNode[]): InterfaceNode[] {
+    function getInterfaces(nodes: ParsedNode[]): OrderedSet<InterfaceNode> {
         return nodes.reduce((acc, node) => {
             if (node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
                 const other = getInterfaces(node.body);
@@ -44,14 +46,14 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                 const clone = fromJS(node.body).toJS();
 
                 const decorated = clone.map(arrayNode => {
-                    arrayNode.name = `${node.name}Item`;
+                    arrayNode.name = getArrayItemName(node.name);
                     return arrayNode;
                 });
                 const other = getInterfaces(decorated);
                 return acc.concat(other);
             }
             return acc;
-        }, OrderedSet([]));
+        }, OrderedSet([]) as any);
     }
 
     function getMembers(stack): string[] {
@@ -86,7 +88,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                 case ts.SyntaxKind.NumericLiteral:
                     return 'number';
                 case ts.SyntaxKind.ObjectLiteralExpression:
-                    return `I${upper(node.name)}Item`;
+                    return getArrayInterfaceItemName(node.name);
                 default: return 'any';
             }
         } else { // bail to 'any' if array contains mixed types
@@ -96,6 +98,18 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
     function upper(string) {
         return string[0].toUpperCase() + string.slice(1);
     }
+    function pascalCase(input) {
+        return startCase(toLower(input)).replace(/ /g, '');
+    }
+    function getArrayInterfaceItemName(input) {
+        return pascalCase(`I_${input}_Item`)
+    }
+    function getArrayItemName(input) {
+        return pascalCase(`${input}_Item`)
+    }
+    // function getArrayInterfaceItemName(input) {
+    //     return pascalCase(`I_${input}_Item`)
+    // }
 }
 
 

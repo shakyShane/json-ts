@@ -150,12 +150,12 @@ interface IRootObject {
   extension_attributes: any[];
   product_links: any[];
   options: any[];
-  media_gallery_entries: IMedia_gallery_entriesItem[];
+  media_gallery_entries: IMediaGalleryEntriesItem[];
   tier_prices: any[];
-  custom_attributes: ICustom_attributesItem[];
+  custom_attributes: ICustomAttributesItem[];
 }
 
-interface IMedia_gallery_entriesItem {
+interface IMediaGalleryEntriesItem {
   id: number;
   media_type: string;
   label: string;
@@ -164,16 +164,16 @@ interface IMedia_gallery_entriesItem {
   file: string;
 }
 
-interface ICustom_attributesItem {
+interface ICustomAttributesItem {
   attribute_code: string;
 }
 
-interface ICustom_attributesItem {
+interface ICustomAttributesItem {
   attribute_code: string;
   value: string;
 }
 
-interface ICustom_attributesItem {
+interface ICustomAttributesItem {
   attribute_code: string;
   value: string[];
 }
