@@ -68,9 +68,6 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                     return `${newInterface.original}: ${newInterface.name};`
                 }
                 case ts.SyntaxKind.ArrayLiteralExpression: {
-                    // const newInterface = createOne(node);
-                    // return `${newInterface.original}: ${newInterface.name};`
-                    // console.log('array', node);
                     const memberTypes = getArrayElementsType(node);
                     return `${node.name}: ${memberTypes}[];`;
                 }
