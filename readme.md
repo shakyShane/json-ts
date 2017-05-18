@@ -45,6 +45,7 @@ TODO:
 
 - [ ] Allow choice of `I` prefix on interface names
 - [ ] Allow naming of RootObject
+- [ ] Allow choice of spaces/tabs
 - [ ] de-dupe interfaces (it's dumb atm, POC)
 - [ ] handle none-valid names - where it's valid in JSON (cuz it's a string) - but not a valid identifier in 
       output TS file
