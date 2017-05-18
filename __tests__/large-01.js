@@ -160,6 +160,7 @@ interface IMediaGalleryEntriesItem {
   media_type: string;
   label: string;
   position: number;
+  disabled: boolean;
   types: string[];
   file: string;
 }

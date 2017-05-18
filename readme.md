@@ -15,7 +15,7 @@ Given the following `JSON` (that could be on disk, or retrieved via a HTTP reque
     "path": "/where",
     "loc": {
         "lat": 10, 
-        "lng": 11,
+        "lng": 11
     }
   }
 }
@@ -46,8 +46,8 @@ TODO:
 - [ ] Allow choice of `I` prefix on interface names
 - [ ] Allow naming of RootObject
 - [ ] Allow choice of spaces/tabs
-- [ ] support array types
-- [ ] support boolean types
+- [x] support array types
+- [x] support boolean types
 - [ ] support null types
 - [x] PascalCase as default for all interface names
 - [x] de-dupe interfaces (it's dumb atm, POC)

@@ -73,37 +73,41 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
         }
     }
 
+    function literalTypeFromProp(prop, kind) {
+        return {
+            name: prop.name.text,
+            value: prop.initializer.text,
+            kind: kind,
+        }
+    }
+
     function eachProp(properties) {
         properties.forEach(function (prop) {
             if (!prop.initializer) {
-                // console.log(prop);
                 return addFromElement(prop);
             } else {
                 switch (prop.initializer.kind) {
+                    case ts.SyntaxKind.TrueKeyword: {
+                        push(literalTypeFromProp(prop, ts.SyntaxKind.TrueKeyword));
+                        break;
+                    }
+                    case ts.SyntaxKind.FalseKeyword: {
+                        push(literalTypeFromProp(prop, ts.SyntaxKind.FalseKeyword));
+                        break;
+                    }
                     case ts.SyntaxKind.StringLiteral: {
-                        const elem = {
-                            name: prop.name.text,
-                            value: prop.initializer.text,
-                            kind: ts.SyntaxKind.StringLiteral,
-                            _kind: `StringLiteral`
-                        };
-                        push(elem);
+                        push(literalTypeFromProp(prop, ts.SyntaxKind.StringLiteral));
                         break;
                     }
                     case ts.SyntaxKind.NumericLiteral: {
-                        const elem = {
-                            name: prop.name.text,
-                            value: prop.initializer.text,
-                            kind: ts.SyntaxKind.NumericLiteral,
-                            _kind: `NumericLiteral`,
-                        };
-                        push(elem);
+                        push(literalTypeFromProp(prop, ts.SyntaxKind.NumericLiteral));
                         break;
                     }
                     case ts.SyntaxKind.ObjectLiteralExpression: {
                         // console.log('OBJ', prop.name.text);
                         const elem = {
-                            name: prop.name.text, body: [],
+                            name: prop.name.text,
+                            body: [],
                             kind: ts.SyntaxKind.ObjectLiteralExpression,
                             _kind: `ObjectLiteralExpression`
                         };

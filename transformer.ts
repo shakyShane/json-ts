@@ -59,6 +59,10 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
     function getMembers(stack): string[] {
         const members = stack.map(node => {
             switch(node.kind) {
+                case ts.SyntaxKind.FalseKeyword:
+                case ts.SyntaxKind.TrueKeyword: {
+                    return `${node.name}: boolean;`
+                }
                 case ts.SyntaxKind.StringLiteral: {
                     return `${node.name}: string;`
                 }
