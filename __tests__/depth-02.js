@@ -9,6 +9,10 @@ const json = `{
     "loc": {
         "lat": 10, 
         "lng": 11,
+        "address": {
+           "house_number": "01",
+           "street": "big barn lane",
+        }
     }
   }
 }
@@ -29,9 +33,15 @@ interface ISummary {
 interface ILoc {
   lat: number;
   lng: number;
+  address: IAddress;
+}
+
+interface IAddress {
+  house_number: string;
+  street: string;
 }
 `;
 
-it('matches', function() {
+it('works 2 levels of depth', function() {
     expect(json2ts(json)).toEqual(expected.slice(1));
 });
