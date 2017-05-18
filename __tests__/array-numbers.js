@@ -2,12 +2,21 @@ const {json2ts} = require('../');
 const assert = require('assert');
 
 const json = `{
-  "ids": [1, 2, 3]
+  "ids": [1, 2, 3],
+  "user": {
+    "pets": ["dog", "cat"]
+  }
+}
 `;
 
 const expected = `
 interface IRootObject {
   ids: number[];
+  user: IUser;
+}
+
+interface IUser {
+  pets: string[];
 }
 `;
 

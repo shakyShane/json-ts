@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import {ParsedNode} from "./parser";
 import * as Immutable from 'immutable';
 
-const { Map, is, List, fromJS, OrderedSet} = Immutable;
+const { Map, is, List, fromJS, OrderedSet, Set} = Immutable;
 
 const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
@@ -57,10 +57,32 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                     const newInterface = createOne(node);
                     return `${newInterface.original}: ${newInterface.name};`
                 }
-
+                case ts.SyntaxKind.ArrayLiteralExpression: {
+                    // const newInterface = createOne(node);
+                    // return `${newInterface.original}: ${newInterface.name};`
+                    // console.log('array', node);
+                    const memberTypes = getArrayElementsType(node);
+                    return `${node.name}: ${memberTypes}[];`;
+                }
             }
         });
         return members
+    }
+
+    function getArrayElementsType(node: ParsedNode) {
+        const kinds = Set(node.body.map(x => x.kind));
+        if (kinds.size === 1) {
+            const kind = kinds.first();
+            switch(kind) {
+                case ts.SyntaxKind.StringLiteral:
+                    return 'string';
+                case ts.SyntaxKind.NumericLiteral:
+                    return 'number';
+                default: return 'any';
+            }
+        } else { // bail to 'any'
+            return 'any';
+        }
     }
 }
 
