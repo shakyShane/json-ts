@@ -40,6 +40,16 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                 const other = getInterfaces(node.body);
                 return acc.concat(fromJS([createOne(node)]), other);
             }
+            if (node.kind === ts.SyntaxKind.ArrayLiteralExpression) {
+                const clone = fromJS(node.body).toJS();
+
+                const decorated = clone.map(arrayNode => {
+                    arrayNode.name = `${node.name}Item`;
+                    return arrayNode;
+                });
+                const other = getInterfaces(decorated);
+                return acc.concat(other);
+            }
             return acc;
         }, OrderedSet([]));
     }
@@ -78,11 +88,16 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                     return 'string';
                 case ts.SyntaxKind.NumericLiteral:
                     return 'number';
+                case ts.SyntaxKind.ObjectLiteralExpression:
+                    return `I${upper(node.name)}Item`;
                 default: return 'any';
             }
-        } else { // bail to 'any'
+        } else { // bail to 'any' if array contains mixed types
             return 'any';
         }
+    }
+    function upper(string) {
+        return string[0].toUpperCase() + string.slice(1);
     }
 }
 

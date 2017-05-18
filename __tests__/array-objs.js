@@ -16,7 +16,11 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  ids: any[];
+  users: IUsersItem[];
+}
+
+interface IUsersItem {
+  name: string;
 }
 `;
 
