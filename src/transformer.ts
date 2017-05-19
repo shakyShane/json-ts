@@ -29,8 +29,10 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
 
     function createOne(node: ParsedNode): InterfaceNode {
         const thisMembers = getMembers(node.body);
+        const newInterfaceName = 'I' + node.name[0].toUpperCase() + node.name.slice(1);
+        
         return {
-            name: 'I' + node.name[0].toUpperCase() + node.name.slice(1),
+            name: newInterfaceName,
             original: node.name,
             members: thisMembers
         };
@@ -38,10 +40,16 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
 
     function getInterfaces(nodes: ParsedNode[]): OrderedSet<InterfaceNode> {
         return nodes.reduce((acc, node) => {
+
             if (node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
-                const other = getInterfaces(node.body);
-                return acc.concat(fromJS([createOne(node)]), other);
+
+                const children = getInterfaces(node.body);
+                const newInterface = createOne(node);
+                const newAsList = fromJS([newInterface]);
+
+                return acc.concat(newAsList, children);
             }
+
             if (node.kind === ts.SyntaxKind.ArrayLiteralExpression) {
                 const clone = fromJS(node.body).toJS();
 
@@ -49,10 +57,14 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                     arrayNode.name = getArrayItemName(node.name);
                     return arrayNode;
                 });
+
                 const other = getInterfaces(decorated);
+                
                 return acc.concat(other);
             }
+
             return acc;
+
         }, OrderedSet([]) as any);
     }
 
@@ -60,24 +72,32 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         const members = stack.map(node => {
             switch(node.kind) {
                 case ts.SyntaxKind.NullKeyword:
-                    return `${node.name}: null;`;
+                    return {type: 'literal', display: `${node.name}: null;`, members: []};
                 case ts.SyntaxKind.FalseKeyword:
                 case ts.SyntaxKind.TrueKeyword: {
-                    return `${node.name}: boolean;`
+                    return {type: 'literal', display: `${node.name}: boolean;`, members: []}
                 }
                 case ts.SyntaxKind.StringLiteral: {
-                    return `${node.name}: string;`
+                    return {type: 'literal', display: `${node.name}: string;`, members: []}
                 }
                 case ts.SyntaxKind.NumericLiteral: {
-                    return `${node.name}: number;`
+                    return {type: 'literal', display: `${node.name}: number;`, members: []}
                 }
                 case ts.SyntaxKind.ObjectLiteralExpression: {
                     const newInterface = createOne(node);
-                    return `${newInterface.original}: ${newInterface.name};`
+                    return {
+                        type: 'interface',
+                        display: `${newInterface.original}: ${newInterface.name};`,
+                        members: newInterface.members
+                    }
                 }
                 case ts.SyntaxKind.ArrayLiteralExpression: {
                     const memberTypes = getArrayElementsType(node);
-                    return `${node.name}: ${memberTypes}[];`;
+                    return {
+                        type: 'array',
+                        display: `${node.name}: ${memberTypes}[];`,
+                        members: [],
+                    };
                 }
             }
         });
