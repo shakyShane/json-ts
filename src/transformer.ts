@@ -1,9 +1,9 @@
 import * as ts from 'typescript';
 import {ParsedNode} from "./parser";
 import * as Immutable from 'immutable';
-import {startCase, toLower} from 'lodash';
 import {OrderedSet} from "immutable";
 
+const {startCase, toLower} = require('../_');
 const { Map, is, List, fromJS, Set} = Immutable;
 
 const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));

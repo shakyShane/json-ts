@@ -5,3 +5,5 @@ parser.js
 printer.js
 transformer.js
 example.js
+_.min.js
+/dist/**
