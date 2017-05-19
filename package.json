@@ -1,12 +1,16 @@
 {
+  "name": "json-ts",
   "dependencies": {
+    "get-stdin": "^5.0.1",
     "immutable": "^3.8.1",
     "lodash": "^4.17.4",
+    "minimist": "^1.2.0",
     "typescript": "^2.3.2"
   },
   "scripts": {
     "test": "tsc && jest"
   },
+  "bin": "bin.js",
   "main": "index.js",
   "devDependencies": {
     "@types/node": "^7.0.18",
