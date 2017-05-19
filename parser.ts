@@ -35,6 +35,26 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
                 push(elem);
                 break;
             }
+            case ts.SyntaxKind.TrueKeyword: {
+                const elem = {
+                    kind: ts.SyntaxKind.TrueKeyword,
+                    _kind: `TrueKeyword`,
+                    name: incoming.text,
+                    value: incoming.text,
+                };
+                push(elem);
+                break;
+            }
+            case ts.SyntaxKind.FalseKeyword: {
+                const elem = {
+                    kind: ts.SyntaxKind.FalseKeyword,
+                    _kind: `FalseKeyword`,
+                    name: incoming.text,
+                    value: incoming.text,
+                };
+                push(elem);
+                break;
+            }
             case ts.SyntaxKind.NumericLiteral: {
                 const elem = {
                     kind: ts.SyntaxKind.NumericLiteral,

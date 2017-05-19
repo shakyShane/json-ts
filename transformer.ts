@@ -99,9 +99,13 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                     return getArrayInterfaceItemName(node.name);
                 default: return 'any';
             }
-        } else { // bail to 'any' if array contains mixed types
-            return 'any';
+        } else if (kinds.size === 2) {
+            if (kinds.has(ts.SyntaxKind.TrueKeyword) && kinds.has(ts.SyntaxKind.FalseKeyword)) {
+                return 'boolean';
+            }
         }
+
+        return 'any';
     }
     function upper(string) {
         return string[0].toUpperCase() + string.slice(1);

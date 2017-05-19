@@ -3,7 +3,8 @@ const assert = require('assert');
 
 const json = `{
   "alive": true,
-  "sad": false
+  "sad": false,
+  "bools": [true, false]
 }
 `;
 
@@ -11,6 +12,7 @@ const expected = `
 interface IRootObject {
   alive: boolean;
   sad: boolean;
+  bools: boolean[];
 }
 `;
 
