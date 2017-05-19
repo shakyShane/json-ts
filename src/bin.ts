@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import minimist = require('minimist');
 import stdin = require('get-stdin');
 import {json2ts} from './';
