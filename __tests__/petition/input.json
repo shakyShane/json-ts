@@ -1,0 +1,42 @@
+{ "format" : "linked-data-api", "version" : "0.2", "result" : {"_about" : "http://lda.data.parliament.uk/epetitions.json", "definition" : "http://lda.data.parliament.uk/meta/epetitions.json", "extendedMetadataVersion" : "http://lda.data.parliament.uk/epetitions.json?_metadata=all", "first" : "http://lda.data.parliament.uk/epetitions.json?_page=0", "hasPart" : "http://lda.data.parliament.uk/epetitions.json", "isPartOf" : "http://lda.data.parliament.uk/epetitions.json", "items" : [{"_about" : "http://data.parliament.uk/resources/727136", "created" : {"_value" : "2017-04-18T11:53:42.241Z", "_datatype" : "dateTime"}
+, "identifier" : {"_value" : "195537"}
+, "label" : {"_value" : "Referendum on Brexit to be held simultaneously to the election on 8th June."}
+, "numberOfSignatures" : 601, "status" : "closed"}
+, {"_about" : "http://data.parliament.uk/resources/726572", "created" : {"_value" : "2017-04-18T10:32:53.749Z", "_datatype" : "dateTime"}
+  , "identifier" : {"_value" : "195498"}
+  , "label" : {"_value" : "Invite international election observers to monitor the next General Election."}
+  , "numberOfSignatures" : 1169, "status" : "closed"}
+, {"_about" : "http://data.parliament.uk/resources/727395", "created" : {"_value" : "2017-04-18T10:19:08.887Z", "_datatype" : "dateTime"}
+  , "identifier" : {"_value" : "195490"}
+  , "label" : {"_value" : "Allow 16 and 17 year olds to vote in the General Election on the 8th of June."}
+  , "numberOfSignatures" : 444, "status" : "closed"}
+, {"_about" : "http://data.parliament.uk/resources/726558", "created" : {"_value" : "2017-04-16T19:10:27.188Z", "_datatype" : "dateTime"}
+  , "identifier" : {"_value" : "195342"}
+  , "label" : {"_value" : "The UK Government should retain our EU Renewable Energy targets as a minimum"}
+  , "numberOfSignatures" : 1194, "status" : "closed"}
+, {"_about" : "http://data.parliament.uk/resources/726079", "created" : {"_value" : "2017-04-16T06:26:13.511Z", "_datatype" : "dateTime"}
+  , "identifier" : {"_value" : "195293"}
+  , "label" : {"_value" : "Afghans should get UK settlement, visit and student visa decision in two weeks."}
+  , "numberOfSignatures" : 3118, "status" : "closed"}
+, {"_about" : "http://data.parliament.uk/resources/726425", "created" : {"_value" : "2017-04-14T19:45:15.621Z", "_datatype" : "dateTime"}
+  , "identifier" : {"_value" : "195193"}
+  , "label" : {"_value" : "Renew the UK work visa for the professional wrestlers Dahlia Black and TK Cooper"}
+  , "numberOfSignatures" : 1533, "status" : "closed"}
+, {"_about" : "http://data.parliament.uk/resources/723962", "created" : {"_value" : "2017-04-14T09:01:17.448Z", "_datatype" : "dateTime"}
+  , "identifier" : {"_value" : "195146"}
+  , "label" : {"_value" : "Publicly confirm that gay men from Chechnya can seek asylum in the UK"}
+  , "numberOfSignatures" : 20459, "status" : "closed"}
+, {"_about" : "http://data.parliament.uk/resources/721197", "created" : {"_value" : "2017-04-13T10:31:22.885Z", "_datatype" : "dateTime"}
+  , "identifier" : {"_value" : "195077"}
+  , "label" : {"_value" : "Scrap the \"rape clause\" and the \"family cap\" on social security payments."}
+  , "numberOfSignatures" : 25307, "status" : "closed"}
+, {"_about" : "http://data.parliament.uk/resources/726101", "created" : {"_value" : "2017-04-12T12:47:05.547Z", "_datatype" : "dateTime"}
+  , "identifier" : {"_value" : "194974"}
+  , "label" : {"_value" : "Change Thames crossing decision from option C3 to option A14"}
+  , "numberOfSignatures" : 2608, "status" : "closed"}
+, {"_about" : "http://data.parliament.uk/resources/727247", "created" : {"_value" : "2017-04-12T10:45:18.684Z", "_datatype" : "dateTime"}
+  , "identifier" : {"_value" : "194951"}
+  , "label" : {"_value" : "Begin an operation to evacuate members of LGBT+ community in Chechnya."}
+  , "numberOfSignatures" : 521, "status" : "closed"}
+], "itemsPerPage" : 10, "next" : "http://lda.data.parliament.uk/epetitions.json?_page=1", "page" : 0, "startIndex" : 1, "totalResults" : 8870, "type" : ["http://purl.org/linked-data/api/vocab#ListEndpoint", "http://purl.org/linked-data/api/vocab#Page"]}
+}

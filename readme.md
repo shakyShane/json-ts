@@ -69,7 +69,7 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
 - [x] support null types
 - [x] PascalCase as default for all interface names
 - [x] de-dupe interfaces (it's dumb atm, POC)
-- [ ] de-dupe interfaces where propname differs, but members are the same
+- [x] de-dupe interfaces where propname differs, but members are the same
 - [ ] union types for array that contain mixed types: `nums: [1, "2"] -> nums: number|string[]` 
 - [ ] handle none-valid names - where it's valid in JSON (cuz it's a string) - but not a valid identifier in 
       output TS file
@@ -85,6 +85,7 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
     ```
     
 ### CLI
+- [x] CLI tool to accept stdin (with `--stdin` flag)
 - [ ] CLI tool to accept json file as input
 - [ ] CLI tool to accept URL as input (for validating against remote API)
 - [ ] configurable output (filename/stdout etc)

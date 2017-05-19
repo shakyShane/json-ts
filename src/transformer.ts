@@ -22,6 +22,7 @@ export interface InterfaceNode {
 
 export function transform(stack: ParsedNode[]): InterfaceNode[] {
 
+    let memberStack = Set([]);
     const wrapper = [{
         kind: ts.SyntaxKind.ObjectLiteralExpression,
         _kind: 'ObjectLiteralExpression',
@@ -34,14 +35,20 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
     return initial.toJS().reverse();
 
     function createOne(node: ParsedNode): InterfaceNode {
+
         const thisMembers = getMembers(node.body);
+
         const newInterfaceName = 'I' + node.name[0].toUpperCase() + node.name.slice(1);
-        
-        return {
+
+        const mem = {
             name: newInterfaceName,
             original: node.name,
             members: thisMembers
         };
+
+        // memberStack = memberStack.add(fromJS(mem));
+
+        return mem;
     }
 
     function getInterfaces(nodes: ParsedNode[]): OrderedSet<InterfaceNode> {
@@ -49,11 +56,19 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
 
             if (node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
 
+                // gather any interfaces for this node's children
                 const children = getInterfaces(node.body);
                 const newInterface = createOne(node);
-                const newAsList = fromJS([newInterface]);
-
-                return acc.concat(newAsList, children);
+                const matches = memberStack.filter(m => {
+                    return Immutable.is(m.get('members'), fromJS(newInterface.members))
+                });
+                if (matches.size === 0) {
+                    memberStack = memberStack.add(fromJS(newInterface));
+                    const newAsList = fromJS([newInterface]);
+                    return acc.concat(newAsList, children);
+                } else {
+                    return acc;
+                }
             }
 
             if (node.kind === ts.SyntaxKind.ArrayLiteralExpression) {
@@ -91,10 +106,21 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                 }
                 case ts.SyntaxKind.ObjectLiteralExpression: {
                     const newInterface = createOne(node);
-                    return {
-                        type: 'interface',
-                        display: `${newInterface.original}: ${newInterface.name};`,
-                        members: newInterface.members
+                    const matches = memberStack.filter(mem => {
+                        return Immutable.is(mem.get('members'), fromJS(newInterface.members));
+                    });
+                    if (matches.size === 0) {
+                        return {
+                            type: 'interface',
+                            display: `${newInterface.original}: ${newInterface.name};`,
+                            members: []
+                        }
+                    } else {
+                        return {
+                            type: 'interface',
+                            display: `${newInterface.original}: ${matches.first().get('name')};`,
+                            members: []
+                        }
                     }
                 }
                 case ts.SyntaxKind.ArrayLiteralExpression: {

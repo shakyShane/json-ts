@@ -8,3 +8,9 @@ export function json2ts(jsonString: string): string {
     const printed = print(transformed);
     return printed;
 }
+
+export {
+    parse,
+    print,
+    transform
+}
