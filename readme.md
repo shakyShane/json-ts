@@ -31,6 +31,10 @@ interface IRootObject {
 
 ## Usage (API)
 
+```bash
+npm install json-ts --save-dev
+```
+
 ```js
 const { json2ts } = require('json-ts');
 const json = `
