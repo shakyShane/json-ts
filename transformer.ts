@@ -86,7 +86,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
 
     function getArrayElementsType(node: ParsedNode) {
         const kinds = Set(node.body.map(x => x.kind));
-        if (kinds.size === 1) {
+        if (kinds.size === 1) { // if there's only 1 kind in the array, it's safe to use type[];
             const kind = kinds.first();
             switch(kind) {
                 case ts.SyntaxKind.NullKeyword:
@@ -99,7 +99,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                     return getArrayInterfaceItemName(node.name);
                 default: return 'any';
             }
-        } else if (kinds.size === 2) {
+        } else if (kinds.size === 2) { // a mix of true/false is still a boolean[];
             if (kinds.has(ts.SyntaxKind.TrueKeyword) && kinds.has(ts.SyntaxKind.FalseKeyword)) {
                 return 'boolean';
             }

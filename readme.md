@@ -51,6 +51,7 @@ TODO:
 - [x] support null types
 - [x] PascalCase as default for all interface names
 - [x] de-dupe interfaces (it's dumb atm, POC)
+- [ ] union types for array that contain mixed types: `nums: [1, "2"] -> nums: number|string[]` 
 - [ ] handle none-valid names - where it's valid in JSON (cuz it's a string) - but not a valid identifier in 
       output TS file
 - [ ] Allow wrapping in namespace: eg: 
