@@ -1,4 +1,4 @@
-import {InterfaceNode} from "./transformer";
+import {InterfaceNode, MemberNode} from "./transformer";
 
 export function print(interfaceNodes: InterfaceNode[]): string {
 
@@ -7,7 +7,7 @@ export function print(interfaceNodes: InterfaceNode[]): string {
         .map(node => {
             return [
                 `interface ${node.name} {`,
-                node.members.map(str => `  ${str}`).join('\n'),
+                node.members.map((str: MemberNode) => `  ${str.display}`).join('\n'),
                 `}`
             ].join('\n')
         });

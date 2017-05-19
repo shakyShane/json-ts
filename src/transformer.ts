@@ -8,10 +8,16 @@ const { Map, is, List, fromJS, Set} = Immutable;
 
 const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
+export interface MemberNode {
+    type: string
+    display: string
+    members: MemberNode[]
+}
+
 export interface InterfaceNode {
     name: string;
     original: string;
-    members: string[];
+    members: MemberNode[];
 }
 
 export function transform(stack: ParsedNode[]): InterfaceNode[] {
@@ -68,7 +74,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         }, OrderedSet([]) as any);
     }
 
-    function getMembers(stack): string[] {
+    function getMembers(stack): MemberNode[] {
         const members = stack.map(node => {
             switch(node.kind) {
                 case ts.SyntaxKind.NullKeyword:
