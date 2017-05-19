@@ -23,8 +23,18 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
 
     return stack;
 
-    function addFromElement(incoming) {
+    function addFromArrayElement(incoming) {
         switch(incoming.kind) {
+            case ts.SyntaxKind.NullKeyword: {
+                const elem = {
+                    kind: ts.SyntaxKind.NullKeyword,
+                    _kind: `NullKeyword`,
+                    name: incoming.text,
+                    value: incoming.text,
+                };
+                push(elem);
+                break;
+            }
             case ts.SyntaxKind.NumericLiteral: {
                 const elem = {
                     kind: ts.SyntaxKind.NumericLiteral,
@@ -84,7 +94,7 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
     function eachProp(properties) {
         properties.forEach(function (prop) {
             if (!prop.initializer) {
-                return addFromElement(prop);
+                return addFromArrayElement(prop);
             } else {
                 switch (prop.initializer.kind) {
                     case ts.SyntaxKind.TrueKeyword: {
@@ -93,6 +103,10 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
                     }
                     case ts.SyntaxKind.FalseKeyword: {
                         push(literalTypeFromProp(prop, ts.SyntaxKind.FalseKeyword));
+                        break;
+                    }
+                    case ts.SyntaxKind.NullKeyword: {
+                        push(literalTypeFromProp(prop, ts.SyntaxKind.NullKeyword));
                         break;
                     }
                     case ts.SyntaxKind.StringLiteral: {

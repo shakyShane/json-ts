@@ -59,6 +59,8 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
     function getMembers(stack): string[] {
         const members = stack.map(node => {
             switch(node.kind) {
+                case ts.SyntaxKind.NullKeyword:
+                    return `${node.name}: null;`;
                 case ts.SyntaxKind.FalseKeyword:
                 case ts.SyntaxKind.TrueKeyword: {
                     return `${node.name}: boolean;`
@@ -87,6 +89,8 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         if (kinds.size === 1) {
             const kind = kinds.first();
             switch(kind) {
+                case ts.SyntaxKind.NullKeyword:
+                    return 'null';
                 case ts.SyntaxKind.StringLiteral:
                     return 'string';
                 case ts.SyntaxKind.NumericLiteral:

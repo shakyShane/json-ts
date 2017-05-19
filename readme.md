@@ -48,7 +48,7 @@ TODO:
 - [ ] Allow choice of spaces/tabs
 - [x] support array types
 - [x] support boolean types
-- [ ] support null types
+- [x] support null types
 - [x] PascalCase as default for all interface names
 - [x] de-dupe interfaces (it's dumb atm, POC)
 - [ ] handle none-valid names - where it's valid in JSON (cuz it's a string) - but not a valid identifier in 
