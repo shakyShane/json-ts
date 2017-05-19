@@ -41,11 +41,15 @@ interface ILoc {
 }
 ```
 
-TODO:
+## TODO:
+
+### options
 
 - [ ] Allow choice of `I` prefix on interface names
 - [ ] Allow naming of RootObject
 - [ ] Allow choice of spaces/tabs
+
+### Core
 - [x] support array types
 - [x] support boolean types
 - [x] support null types
@@ -64,6 +68,8 @@ TODO:
             ...
         }
     ```
+    
+### CLI
 - [ ] CLI tool to accept json file as input
 - [ ] CLI tool to accept URL as input (for validating against remote API)
-- [ ] configurable output
+- [ ] configurable output (filename/stdout etc)
