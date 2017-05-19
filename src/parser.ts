@@ -25,55 +25,12 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
 
     function addFromArrayElement(incoming) {
         switch(incoming.kind) {
-            case ts.SyntaxKind.NullKeyword: {
-                const elem = {
-                    kind: ts.SyntaxKind.NullKeyword,
-                    _kind: `NullKeyword`,
-                    name: incoming.text,
-                    value: incoming.text,
-                };
-                push(elem);
-                break;
-            }
-            case ts.SyntaxKind.TrueKeyword: {
-                const elem = {
-                    kind: ts.SyntaxKind.TrueKeyword,
-                    _kind: `TrueKeyword`,
-                    name: incoming.text,
-                    value: incoming.text,
-                };
-                push(elem);
-                break;
-            }
-            case ts.SyntaxKind.FalseKeyword: {
-                const elem = {
-                    kind: ts.SyntaxKind.FalseKeyword,
-                    _kind: `FalseKeyword`,
-                    name: incoming.text,
-                    value: incoming.text,
-                };
-                push(elem);
-                break;
-            }
-            case ts.SyntaxKind.NumericLiteral: {
-                const elem = {
-                    kind: ts.SyntaxKind.NumericLiteral,
-                    _kind: `NumericLiteral`,
-                    name: incoming.text,
-                    value: incoming.text,
-                };
-                push(elem);
-                break;
-            }
+            case ts.SyntaxKind.NullKeyword:
+            case ts.SyntaxKind.TrueKeyword:
+            case ts.SyntaxKind.FalseKeyword:
+            case ts.SyntaxKind.NumericLiteral:
             case ts.SyntaxKind.StringLiteral: {
-                const elem = {
-                    kind: ts.SyntaxKind.StringLiteral,
-                    _kind: `StringLiteral`,
-                    name: incoming.text,
-                    value: incoming.text,
-                };
-                push(elem);
-                // console.log(incoming);
+                push(literalTypeFromArrayElement(incoming, incoming.kind));
                 break;
             }
             case ts.SyntaxKind.ObjectLiteralExpression: {
@@ -103,37 +60,21 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
         }
     }
 
-    function literalTypeFromProp(prop, kind) {
-        return {
-            name: prop.name.text,
-            value: prop.initializer.text,
-            kind: kind,
-        }
-    }
-
     function eachProp(properties) {
         properties.forEach(function (prop) {
             if (!prop.initializer) {
                 return addFromArrayElement(prop);
             } else {
                 switch (prop.initializer.kind) {
-                    case ts.SyntaxKind.TrueKeyword: {
-                        push(literalTypeFromProp(prop, ts.SyntaxKind.TrueKeyword));
-                        break;
-                    }
-                    case ts.SyntaxKind.FalseKeyword: {
-                        push(literalTypeFromProp(prop, ts.SyntaxKind.FalseKeyword));
-                        break;
-                    }
-                    case ts.SyntaxKind.NullKeyword: {
-                        push(literalTypeFromProp(prop, ts.SyntaxKind.NullKeyword));
-                        break;
-                    }
-                    case ts.SyntaxKind.StringLiteral: {
-                        push(literalTypeFromProp(prop, ts.SyntaxKind.StringLiteral));
-                        break;
-                    }
+                    case ts.SyntaxKind.TrueKeyword:
+                    case ts.SyntaxKind.FalseKeyword:
+                    case ts.SyntaxKind.NullKeyword:
+                    case ts.SyntaxKind.StringLiteral:
                     case ts.SyntaxKind.NumericLiteral: {
+                        push(literalTypeFromProp(prop, prop.initializer.kind));
+                        break;
+                    }
+                    case ts.SyntaxKind.PrefixUnaryExpression: {
                         push(literalTypeFromProp(prop, ts.SyntaxKind.NumericLiteral));
                         break;
                     }
@@ -167,6 +108,22 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
                 }
             }
         });
+    }
+
+    function literalTypeFromProp(prop, kind) {
+        return {
+            name: prop.name.text,
+            value: prop.initializer.text,
+            kind: kind,
+        }
+    }
+
+    function literalTypeFromArrayElement(element, kind) {
+        return {
+            kind,
+            name: element.text,
+            value: element.text,
+        }
     }
 }
 
