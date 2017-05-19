@@ -1,6 +1,6 @@
-> TS implementation of json2ts
+## json-ts
 
-Automatically generate Typescript Definition files based on JSON input. This allows
+> Automatically generate Typescript Definition files based on JSON input. This allows
  a frontend to verify it's using a backend correctly & optionally tie it into a CI environment.
  
 ![json-ts](https://cdn.rawgit.com/shakyShane/json-ts/37ce9b2b/json-ts2.gif)
