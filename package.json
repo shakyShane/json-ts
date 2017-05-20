@@ -5,6 +5,7 @@
     "get-stdin": "^5.0.1",
     "immutable": "^3.8.1",
     "minimist": "^1.2.0",
+    "needsquotes": "^1.0.0",
     "typescript": "^2.3.2"
   },
   "scripts": {

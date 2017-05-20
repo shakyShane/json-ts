@@ -2,6 +2,7 @@ import * as ts from 'typescript';
 import {ParsedNode} from "./parser";
 import * as Immutable from 'immutable';
 import {OrderedSet} from "immutable";
+import needsQuotes = require('needsquotes');
 
 const {startCase, toLower} = require('../_');
 const { Map, is, List, fromJS, Set} = Immutable;
@@ -91,20 +92,29 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         }, OrderedSet([]) as any);
     }
 
-    function getMembers(stack): MemberNode[] {
+    function displayName(name: string): string {
+        const needs = needsQuotes(name);
+
+        if (needs.needsQuotes) {
+            return needs.quotedValue;
+        }
+        return name;
+    }
+
+    function getMembers(stack: ParsedNode[]): MemberNode[] {
         const members = stack.map(node => {
             switch(node.kind) {
                 case ts.SyntaxKind.NullKeyword:
-                    return {type: 'literal', display: `${node.name}: null;`, members: []};
+                    return {type: 'literal', display: `${displayName(node.name)}: null;`, members: []};
                 case ts.SyntaxKind.FalseKeyword:
                 case ts.SyntaxKind.TrueKeyword: {
-                    return {type: 'literal', display: `${node.name}: boolean;`, members: []}
+                    return {type: 'literal', display: `${displayName(node.name)}: boolean;`, members: []}
                 }
                 case ts.SyntaxKind.StringLiteral: {
-                    return {type: 'literal', display: `${node.name}: string;`, members: []}
+                    return {type: 'literal', display: `${displayName(node.name)}: string;`, members: []}
                 }
                 case ts.SyntaxKind.NumericLiteral: {
-                    return {type: 'literal', display: `${node.name}: number;`, members: []}
+                    return {type: 'literal', display: `${displayName(node.name)}: number;`, members: []}
                 }
                 case ts.SyntaxKind.ObjectLiteralExpression: {
 
@@ -117,7 +127,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
 
                     return {
                         type: 'interface',
-                        display: `${newInterface.original}: ${name};`,
+                        display: `${displayName(newInterface.original)}: ${name};`,
                         members: []
                     }
                 }
@@ -125,7 +135,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                     const memberTypes = getArrayElementsType(node);
                     return {
                         type: 'array',
-                        display: `${node.name}: ${memberTypes}[];`,
+                        display: `${displayName(node.name)}: ${memberTypes}[];`,
                         members: [],
                     };
                 }
