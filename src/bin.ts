@@ -21,7 +21,13 @@ if (options.get('stdin')) {
         if (str === '') {
             console.error('no input provided');
         } else {
-            console.log(json2ts(str));
+            try {
+                JSON.parse(str);
+                console.log(json2ts(str));
+            } catch (e) {
+                console.error('Invalid JSON');
+                console.error(e.message);
+            }
         }
     })
     .catch(err => {
