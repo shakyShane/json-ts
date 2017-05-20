@@ -65,8 +65,9 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                 const newInterface = createOne(node);
                 const matches = getMatches(newInterface.members);
                 if (matches.length === 0) {
-                    memberStack.push(fromJS(newInterface));
-                    const newAsList = fromJS([newInterface]);
+                    const asMap = fromJS(newInterface);
+                    memberStack.push(asMap);
+                    const newAsList = List([asMap]);
                     return acc.concat(newAsList, children);
                 }
                 return acc;
