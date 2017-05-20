@@ -8,7 +8,7 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  "in^valid": string;
+  'in^valid': string;
 }
 `;
 
