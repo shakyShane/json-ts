@@ -3,6 +3,7 @@ import {ParsedNode} from "./parser";
 import * as Immutable from 'immutable';
 import {OrderedSet, List, Set} from "immutable";
 import needsQuotes = require('needsquotes');
+import {JsonTsOptions} from "./index";
 
 const {startCase, toLower} = require('../_');
 const { Map, is, fromJS} = Immutable;
@@ -35,7 +36,7 @@ export interface ImmutableNode extends Map<string, any> {
     get(path: 'members'): List<ImmutableMemberNode>
 }
 
-export function transform(stack: ParsedNode[]): InterfaceNode[] {
+export function transform(stack: ParsedNode[], options: JsonTsOptions): InterfaceNode[] {
 
     const memberStack = [];
     const wrapper = [{

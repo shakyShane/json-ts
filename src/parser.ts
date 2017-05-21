@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import {JsonTsOptions} from "./index";
 
 export interface ParsedNode {
     kind: ts.SyntaxKind
@@ -127,7 +128,7 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
     }
 }
 
-export function parse(string): any[] {
+export function parse(string, options: JsonTsOptions): any[] {
     const input = `const ROOTOBJ = ${string}`;
     let sourceFile : ts.SourceFile = ts.createSourceFile('json.ts', input, ts.ScriptTarget.ES2015, /*setParentNodes */ true);
     // delint it

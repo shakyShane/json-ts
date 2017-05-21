@@ -2,10 +2,22 @@ import {parse} from "./parser";
 import {print} from "./printer";
 import {transform} from "./transformer";
 
-export function json2ts(validJsonString: string): string {
-    const parsed = parse(validJsonString);
-    const transformed = transform(parsed);
-    const printed = print(transformed);
+export interface JsonTsOptions {
+    namespace?: string
+}
+
+const defaults = {
+
+};
+
+export function json2ts(validJsonString: string, options: JsonTsOptions = {}): string {
+    const merged = {
+        ...defaults,
+        ...options
+    };
+    const parsed = parse(validJsonString, merged);
+    const transformed = transform(parsed, merged);
+    const printed = print(transformed, merged);
     return printed;
 }
 

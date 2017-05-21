@@ -75,7 +75,8 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
       (already works for complex objects)
 - [x] quoted member names when needed
 - [ ] handle invalid name for interface
-- [ ] Allow wrapping in namespace: eg: 
+- [ ] Use Typescript factory methods/printer for output 
+- [x] Allow wrapping in namespace: eg: 
     ```ts
         declare namespace Projects {
             export interface ILoc {
