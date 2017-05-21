@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/shakyShane/json-ts.svg?branch=master)](https://travis-ci.org/shakyShane/json-ts)
+
 ## json-ts
 
 > Automatically generate Typescript Definition files based on JSON input. This allows
