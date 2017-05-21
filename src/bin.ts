@@ -13,19 +13,23 @@ const inputs = OrderedSet<string>(argv._);
 // defaults
 const defaults = {
     stdin: false,
+    namespace: false,
 };
 
 // merged options with defaults
-const options = fromJS(defaults).merge(argv);
+const options = {
+    ...defaults,
+    ...argv
+};
 
-if (options.get('stdin')) {
+if (options.stdin) {
     stdin().then((str: string) => {
         if (str === '') {
             console.error('no input provided');
         } else {
             try {
                 JSON.parse(str);
-                console.log(json2ts(str));
+                console.log(json2ts(str, options));
             } catch (e) {
                 console.error('Invalid JSON');
                 console.error(e.message);
@@ -73,7 +77,7 @@ Or, provide path names:
             })
         } else {
             withoutErrors.forEach(item => {
-                console.log(json2ts(item.resolved.content));
+                console.log(json2ts(item.resolved.content, options));
             });
         }
     }
