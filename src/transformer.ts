@@ -79,7 +79,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                             // Does the current type not match the existing?
                             if (matchingFromIncoming && !matchingFromIncoming.get('types').contains(prev.get('type'))) {
                                 return prev.update('types', function (types) {
-                                    if (types.contains('Array')) {
+                                    if (types.contains('Array<any>')) {
                                         return matchingFromIncoming.get('types');
                                     }
                                     return types.concat(matchingFromIncoming.get('types'));
@@ -207,7 +207,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                         return {
                             name: node.name,
                             optional: false,
-                            types: Set([`Array`]),
+                            types: Set([`Array<any>`]),
                             members: [],
                         };
                     }

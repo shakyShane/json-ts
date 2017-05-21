@@ -147,11 +147,11 @@ interface IRootObject {
   type_id: string;
   created_at: string;
   updated_at: string;
-  extension_attributes: Array;
-  product_links: Array;
-  options: Array;
+  extension_attributes: Array<any>;
+  product_links: Array<any>;
+  options: Array<any>;
   media_gallery_entries: IMediaGalleryEntriesItem[];
-  tier_prices: Array;
+  tier_prices: Array<any>;
   custom_attributes: ICustomAttributesItem[];
 }
 
