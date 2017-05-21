@@ -167,16 +167,7 @@ interface IMediaGalleryEntriesItem {
 
 interface ICustomAttributesItem {
   attribute_code: string;
-}
-
-interface ICustomAttributesItem {
-  attribute_code: string;
-  value: string;
-}
-
-interface ICustomAttributesItem {
-  attribute_code: string;
-  value: string[];
+  value?: string|string[];
 }
 `;
 

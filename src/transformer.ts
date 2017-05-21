@@ -1,24 +1,38 @@
 import * as ts from 'typescript';
 import {ParsedNode} from "./parser";
 import * as Immutable from 'immutable';
-import {OrderedSet} from "immutable";
+import {OrderedSet, List} from "immutable";
 import needsQuotes = require('needsquotes');
 
 const {startCase, toLower} = require('../_');
-const { Map, is, List, fromJS, Set} = Immutable;
+const { Map, is, fromJS, Set} = Immutable;
 
 const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
 export interface MemberNode {
     type: string
-    display: string
     members: MemberNode[]
+    name: string
+    optional: boolean
+}
+
+export interface ImmutableMemberNode extends Map<string, any> {
+    get(path: 'type'): string
+    get(path: 'members'): List<ImmutableMemberNode>
+    get(path: 'name'): string
+    get(path: 'optional'): boolean
 }
 
 export interface InterfaceNode {
     name: string;
     original: string;
     members: MemberNode[];
+}
+
+export interface ImmutableNode extends Map<string, any> {
+    get(path: 'name'): string
+    get(path: 'original'): string
+    get(path: 'members'): List<ImmutableMemberNode>
 }
 
 export function transform(stack: ParsedNode[]): InterfaceNode[] {
@@ -31,9 +45,52 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         body: stack
     }];
 
-    const initial = getInterfaces(wrapper);
+    const interfaces = getInterfaces(wrapper);
+    const merged = mergeDuplicateInterfaces(interfaces.toList());
 
-    return initial.toJS().reverse();
+    return merged.toJS().reverse();
+
+    function mergeDuplicateInterfaces(interfaces: List<ImmutableNode>): List<ImmutableNode> {
+        const merged = interfaces.reduce((acc, current) => {
+
+            const index = acc.findIndex(prev => prev.get('name') === current.get('name'));
+
+            // We have a matching interface NAME
+            if (index > -1) {
+
+                // here, the current interface matches a PREV one
+                return acc.updateIn([index, 'members'], function(prevMembers) {
+
+                    // console.log('members in current, not in prev');
+                    const memberNames = prevMembers.map(x => x.get('name')).toSet();
+                    const newMembers = current
+                        .get('members')
+                        .filter(member => !memberNames.has(member.get('name')))
+                        .map(member => {
+                            return member.set('optional', true);
+                        });
+
+                    return prevMembers
+                        .map(prev => {
+                            const matchingFromIncoming = current.get('members').find(x => x.get('name') === prev.get('name'));
+                            // Does the current type not match the existing?
+                            if (matchingFromIncoming && matchingFromIncoming.get('type') !== prev.get('type')) {
+                                return prev.update('type', function (type) {
+                                    return [type, matchingFromIncoming.get('type')].join('|');
+                                });
+                            }
+                            return prev;
+                        })
+                        .concat(newMembers);
+                })
+            }
+
+            return acc.push(current);
+
+        }, List([]));
+
+        return merged;
+    }
 
     function getMatches(members: MemberNode[]) {
         return memberStack.filter(m => {
@@ -56,7 +113,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         return mem;
     }
 
-    function getInterfaces(nodes: ParsedNode[]): OrderedSet<InterfaceNode> {
+    function getInterfaces(nodes: ParsedNode[]): OrderedSet<ImmutableNode> {
         return nodes.reduce((acc, node) => {
 
             if (node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
@@ -92,50 +149,43 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         }, OrderedSet([]) as any);
     }
 
-    function displayName(name: string): string {
-        const needs = needsQuotes(name);
-
-        if (needs.needsQuotes) {
-            return needs.quotedValue;
-        }
-        return name;
-    }
-
     function getMembers(stack: ParsedNode[]): MemberNode[] {
         const members = stack.map(node => {
             switch(node.kind) {
                 case ts.SyntaxKind.NullKeyword:
-                    return {type: 'literal', display: `${displayName(node.name)}: null;`, members: []};
+                    return {name: node.name, optional: false, type: 'null',  members: []};
                 case ts.SyntaxKind.FalseKeyword:
                 case ts.SyntaxKind.TrueKeyword: {
-                    return {type: 'literal', display: `${displayName(node.name)}: boolean;`, members: []}
+                    return {name: node.name, optional: false, type: 'boolean',  members: []}
                 }
                 case ts.SyntaxKind.StringLiteral: {
-                    return {type: 'literal', display: `${displayName(node.name)}: string;`, members: []}
+                    return {name: node.name, optional: false, type: 'string',  members: []}
                 }
                 case ts.SyntaxKind.NumericLiteral: {
-                    return {type: 'literal', display: `${displayName(node.name)}: number;`, members: []}
+                    return {name: node.name, optional: false, type: 'number',  members: []}
                 }
                 case ts.SyntaxKind.ObjectLiteralExpression: {
 
                     const newInterface = createOne(node);
                     const matches = getMatches(newInterface.members);
 
-                    const name = matches.length
+                    const interfaceName = matches.length
                         ? matches[0].get('name')
                         : newInterface.name;
 
                     return {
-                        type: 'interface',
-                        display: `${displayName(newInterface.original)}: ${name};`,
+                        name: node.name,
+                        optional: false,
+                        type: interfaceName,
                         members: []
                     }
                 }
                 case ts.SyntaxKind.ArrayLiteralExpression: {
                     const memberTypes = getArrayElementsType(node);
                     return {
-                        type: 'array',
-                        display: `${displayName(node.name)}: ${memberTypes}[];`,
+                        name: node.name,
+                        optional: false,
+                        type: `${memberTypes}[]`,
                         members: [],
                     };
                 }

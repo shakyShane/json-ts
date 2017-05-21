@@ -70,6 +70,7 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
 - [x] PascalCase as default for all interface names
 - [x] de-dupe interfaces (it's dumb atm, POC)
 - [x] de-dupe interfaces where propname differs, but members are the same
+- [x] merge interfaces by creating union types for members
 - [ ] union types for array that contain mixed types: `nums: [1, "2"] -> nums: number|string[]` 
 - [x] quoted member names when needed
 - [ ] handle invalid name for interface
