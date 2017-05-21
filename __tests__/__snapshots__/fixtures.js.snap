@@ -1,0 +1,120 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches gmaps 1`] = `
+"interface IRootObject {
+  results: IResultsItem[];
+  status: string;
+}
+
+interface IResultsItem {
+  address_components: IAddressComponentsItem[];
+  formatted_address: string;
+  geometry: IGeometry;
+  place_id: string;
+  types: string[];
+}
+
+interface IAddressComponentsItem {
+  long_name: string;
+  short_name: string;
+  types: string[];
+}
+
+interface IGeometry {
+  bounds: IBounds;
+  location: INortheast;
+  location_type: string;
+  viewport: IBounds;
+}
+
+interface IBounds {
+  northeast: INortheast;
+  southwest: INortheast;
+}
+
+interface INortheast {
+  lat: number;
+  lng: number;
+}
+"
+`;
+
+exports[`matches magento 1`] = `
+"interface IRootObject {
+  id: number;
+  sku: string;
+  name: string;
+  attribute_set_id: number;
+  price: number;
+  status: number;
+  visibility: number;
+  type_id: string;
+  created_at: string;
+  updated_at: string;
+  extension_attributes: Array<any>;
+  product_links: Array<any>;
+  options: Array<any>;
+  media_gallery_entries: IMediaGalleryEntriesItem[];
+  tier_prices: Array<any>;
+  custom_attributes: ICustomAttributesItem[];
+}
+
+interface IMediaGalleryEntriesItem {
+  id: number;
+  media_type: string;
+  label: string;
+  position: number;
+  disabled: boolean;
+  types: string[];
+  file: string;
+}
+
+interface ICustomAttributesItem {
+  attribute_code: string;
+  value: string|string[];
+}
+"
+`;
+
+exports[`matches petition 1`] = `
+"interface IRootObject {
+  format: string;
+  version: string;
+  result: IResult;
+}
+
+interface IResult {
+  _about: string;
+  definition: string;
+  extendedMetadataVersion: string;
+  first: string;
+  hasPart: string;
+  isPartOf: string;
+  items: IItemsItem[];
+  itemsPerPage: number;
+  next: string;
+  page: number;
+  startIndex: number;
+  totalResults: number;
+  type: string[];
+}
+
+interface IItemsItem {
+  _about: string;
+  created: ICreated;
+  identifier: IIdentifier;
+  label: IIdentifier;
+  numberOfSignatures: number;
+  status: string;
+}
+
+interface ICreated {
+  _value: string;
+  _datatype: string;
+}
+
+interface IIdentifier {
+  _value: string;
+}
+"
+`;
