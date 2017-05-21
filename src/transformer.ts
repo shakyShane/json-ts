@@ -1,23 +1,23 @@
 import * as ts from 'typescript';
 import {ParsedNode} from "./parser";
 import * as Immutable from 'immutable';
-import {OrderedSet, List} from "immutable";
+import {OrderedSet, List, Set} from "immutable";
 import needsQuotes = require('needsquotes');
 
 const {startCase, toLower} = require('../_');
-const { Map, is, fromJS, Set} = Immutable;
+const { Map, is, fromJS} = Immutable;
 
 const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
 export interface MemberNode {
-    type: string
+    types: Set<string>
     members: MemberNode[]
     name: string
     optional: boolean
 }
 
 export interface ImmutableMemberNode extends Map<string, any> {
-    get(path: 'type'): string
+    get(path: 'types'): Set<string>
     get(path: 'members'): List<ImmutableMemberNode>
     get(path: 'name'): string
     get(path: 'optional'): boolean
@@ -63,25 +63,36 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
 
                     // console.log('members in current, not in prev');
                     const memberNames = prevMembers.map(x => x.get('name')).toSet();
-                    const newMembers = current
+                    const currenMemberNames = current.get('members').map(x => x.get('name')).toSet();
+                    const newMembersFromCurrent = current
                         .get('members')
                         .filter(member => !memberNames.has(member.get('name')))
                         .map(member => {
                             return member.set('optional', true);
                         });
 
+                    // any items that exist
+
                     return prevMembers
                         .map(prev => {
                             const matchingFromIncoming = current.get('members').find(x => x.get('name') === prev.get('name'));
                             // Does the current type not match the existing?
-                            if (matchingFromIncoming && matchingFromIncoming.get('type') !== prev.get('type')) {
-                                return prev.update('type', function (type) {
-                                    return [type, matchingFromIncoming.get('type')].join('|');
+                            if (matchingFromIncoming && !matchingFromIncoming.get('types').contains(prev.get('type'))) {
+                                return prev.update('types', function (types) {
+                                    return types.concat(matchingFromIncoming.get('types'));
                                 });
                             }
                             return prev;
                         })
-                        .concat(newMembers);
+                        // Look at prev member, if it doesn't exist in this current object, it's
+                        // optional
+                        .map(prev => {
+                            if (!currenMemberNames.has(prev.get('name'))) {
+                                return prev.set('optional', true);
+                            }
+                            return prev;
+                        })
+                        .concat(newMembersFromCurrent);
                 })
             }
 
@@ -153,16 +164,16 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
         const members = stack.map(node => {
             switch(node.kind) {
                 case ts.SyntaxKind.NullKeyword:
-                    return {name: node.name, optional: false, type: 'null',  members: []};
+                    return {name: node.name, optional: false, types: Set(['null']),  members: []};
                 case ts.SyntaxKind.FalseKeyword:
                 case ts.SyntaxKind.TrueKeyword: {
-                    return {name: node.name, optional: false, type: 'boolean',  members: []}
+                    return {name: node.name, optional: false, types: Set(['boolean']),  members: []}
                 }
                 case ts.SyntaxKind.StringLiteral: {
-                    return {name: node.name, optional: false, type: 'string',  members: []}
+                    return {name: node.name, optional: false, types: Set(['string']),  members: []}
                 }
                 case ts.SyntaxKind.NumericLiteral: {
-                    return {name: node.name, optional: false, type: 'number',  members: []}
+                    return {name: node.name, optional: false, types: Set(['number']),  members: []}
                 }
                 case ts.SyntaxKind.ObjectLiteralExpression: {
 
@@ -176,7 +187,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                     return {
                         name: node.name,
                         optional: false,
-                        type: interfaceName,
+                        types: Set([interfaceName]),
                         members: []
                     }
                 }
@@ -185,7 +196,7 @@ export function transform(stack: ParsedNode[]): InterfaceNode[] {
                     return {
                         name: node.name,
                         optional: false,
-                        type: `${memberTypes}[]`,
+                        types: Set([`${memberTypes}[]`]),
                         members: [],
                     };
                 }

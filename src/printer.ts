@@ -18,14 +18,17 @@ function memberName(node: MemberNode): string {
     return propName;
 }
 
-export function print(interfaceNodes: InterfaceNode[]): string {
+function typeDisplay(node: MemberNode): string {
+    return node.types.join('|');
+}
 
+export function print(interfaceNodes: InterfaceNode[]): string {
     const blocks = interfaceNodes
         .reverse()
         .map(node => {
             return [
                 `interface ${node.name} {`,
-                node.members.map((str: MemberNode) => `  ${memberName(str)}: ${str.type};`).join('\n'),
+                node.members.map((str: MemberNode) => `  ${memberName(str)}: ${typeDisplay(str)};`).join('\n'),
                 `}`
             ].join('\n')
         });
