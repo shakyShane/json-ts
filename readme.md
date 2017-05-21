@@ -5,17 +5,25 @@
  
 ![json-ts](https://cdn.rawgit.com/shakyShane/json-ts/37ce9b2b/json-ts2.gif)
  
-## Install
+## Quick-start
 ```bash
+# install
 npm install -g json-ts
+
+# run against JSON file
+json-ts dir/myfile.json
 ```
 
 ## Usage (CLI)
-Note: only stdin is supported right now, which requires the --stdin flag. 
-Later I will add support for Windows, reading data from disk/network requests
+Note: only stdin (which requires the --stdin flag) & filepaths are supported right now. 
+Later I will add support for Windows, reading data from network requests etc.
 
 ```bash
+## piping via stdin
 curl https://jsonplaceholder.typicode.com/posts/1 | json-ts --stdin
+
+## reading json from disk
+json-ts my-file.json
 ```
 
 ... produces the following: 
@@ -54,6 +62,17 @@ interface IRootObject {
 ```
 
 For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/master/__tests__) 
+
+## Options
+
+ - *namespace: string* - if provided, interfaces will be wrapped in a namespace (see below)
+    ```bash
+    # usage
+    json-ts <filename> --namespace <namespace_name> 
+    
+    # example
+    json-ts data/my-file.json --namespace API
+    ```
 
 ## TODO:
 
