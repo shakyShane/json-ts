@@ -3,10 +3,12 @@ import minimist = require('minimist');
 import stdin = require('get-stdin');
 import {json2ts} from './';
 import {fromJS, OrderedSet} from 'immutable';
+import {join, parse, ParsedPath} from "path";
+import {existsSync, readFile, readFileSync} from "fs";
 const argv = minimist(process.argv.slice(2));
 
 // unique input
-const inputs = OrderedSet(argv._);
+const inputs = OrderedSet<string>(argv._);
 
 // defaults
 const defaults = {
@@ -34,11 +36,88 @@ if (options.get('stdin')) {
         console.error(err);
     })
 } else {
-    // todo support filenames/urls for input
-    console.log('Sorry the only input type supported right now is stdin');
-    console.log('pipe some data and then provide ');
+    if (inputs.size === 0) {
+        console.error('Oops! You provided no inputs');
+        console.log(`
+You can pipe JSON to this program with the --stdin flag:
+
+    curl http://example.com/some-json | json-ts --stdin
+    
+Or, provide path names:
+
+    json-ts path/to/my-file.json
+        `);
+    } else {
+        const queue = inputs
+            .map(input => {
+                return {
+                    input,
+                    parsed: parse(input),
+                };
+            })
+            .map(incoming => {
+                return {
+                    incoming,
+                    resolved: resolveInput(incoming, process.cwd())
+                }
+            });
+
+        const withErrors = queue.filter(x => x.resolved.errors.length > 0);
+        const withoutErrors = queue.filter(x => x.resolved.errors.length === 0);
+        if (withErrors.size) {
+            console.log('Sorry, there were errors with your input.');
+            withErrors.forEach(function (item) {
+                console.log('');
+                console.log(`  ${item.incoming.input}:`);
+                console.log('    ', item.resolved.errors[0].error.message);
+            })
+        } else {
+            withoutErrors.forEach(item => {
+                console.log(json2ts(item.resolved.content));
+            });
+        }
+    }
 }
 
+interface IIncomingInput {
+    input: string,
+    parsed: ParsedPath,
+}
+interface InputError {
+    kind: string,
+    error: Error
+}
+interface IResolvedInput {
+    errors: InputError[],
+    content?: string
+}
+
+function resolveInput(incoming: IIncomingInput, cwd): IResolvedInput {
+    const absolute = join(cwd, incoming.parsed.dir, incoming.parsed.base)
+    if (!existsSync(absolute)) {
+        return {
+            errors: [{
+                kind: 'FileNotFound',
+                error: new Error(`File not found`)
+            }]
+        }
+    }
+    const data = readFileSync(absolute, 'utf8');
+    try {
+        JSON.parse(data);
+        return {
+            errors: [],
+            content: data
+        }
+    } catch (e) {
+        return {
+            errors: [{
+                kind: 'InvalidJson',
+                error: e
+            }]
+        }
+    }
+}
 // console.log('options:', options);
 // console.log('inputs:', inputs);
 // console.log('args', argv);

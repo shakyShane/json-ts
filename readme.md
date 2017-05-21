@@ -71,7 +71,8 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
 - [x] de-dupe interfaces (it's dumb atm, POC)
 - [x] de-dupe interfaces where propname differs, but members are the same
 - [x] merge interfaces by creating union types for members
-- [ ] union types for array that contain mixed types: `nums: [1, "2"] -> nums: number|string[]` 
+- [ ] union types for array that contain mixed literal types: `nums: [1, "2"] -> nums: number|string[]`
+      (already works for complex objects)
 - [x] quoted member names when needed
 - [ ] handle invalid name for interface
 - [ ] Allow wrapping in namespace: eg: 
@@ -87,6 +88,6 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
     
 ### CLI
 - [x] CLI tool to accept stdin (with `--stdin` flag)
-- [ ] CLI tool to accept json file as input
+- [x] CLI tool to accept json file as input
 - [ ] CLI tool to accept URL as input (for validating against remote API)
 - [ ] configurable output (filename/stdout etc)
