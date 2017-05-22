@@ -91,13 +91,21 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
     # example (remove prefix)
     json-ts data/my-file.json --prefix ""
     ```
+ - **rootName: string** - override the `RootObject` name of the top-level interface
+    ```bash
+    # usage
+    json-ts <filename> --rootName <rootname_string> 
+    
+    # example
+    json-ts data/my-file.json --rootName "Product"
+    ```
 
 ## TODO:
 
 ### options
 
 - [x] Allow choice of `I` prefix on interface names
-- [ ] Allow naming of RootObject
+- [x] Allow naming of RootObject
 - [ ] Allow choice of spaces/tabs
 
 ### Core

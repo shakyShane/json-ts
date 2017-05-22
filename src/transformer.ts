@@ -42,7 +42,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
     const wrapper = [{
         kind: ts.SyntaxKind.ObjectLiteralExpression,
         _kind: 'ObjectLiteralExpression',
-        name: 'rootObject',
+        name: options.rootName,
         body: stack
     }];
 

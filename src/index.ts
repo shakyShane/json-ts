@@ -5,11 +5,13 @@ import {transform} from "./transformer";
 export interface JsonTsOptions {
     namespace?: string
     flow?: boolean
-    prefix?: string
+    prefix?: string,
+    rootName?: string
 }
 
 const defaults = {
-    prefix: "I"
+    prefix: "I",
+    rootName: "RootObject"
 };
 
 export function json2ts(validJsonString: string, options: JsonTsOptions = {}): string {
