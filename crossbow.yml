@@ -1,0 +1,9 @@
+
+tasks:
+  browserify:
+    description: A special build for browser-globals
+    tasks:
+      - >
+        @npm browserify dist/index.js -d |
+        exorcist dist/json-ts.js.map
+        > dist/json-ts.js

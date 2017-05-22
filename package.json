@@ -23,7 +23,10 @@
   "main": "dist/index.js",
   "devDependencies": {
     "@types/node": "^7.0.18",
+    "browserify": "^14.3.0",
+    "exorcist": "^0.4.0",
     "jest": "^20.0.3",
-    "source-map-support": "^0.4.15"
+    "source-map-support": "^0.4.15",
+    "uglify-js": "^3.0.10"
   }
 }

@@ -30,3 +30,11 @@ export {
     print,
     transform
 }
+
+declare var window;
+if ((typeof window !== 'undefined') && ((typeof window.json2ts) === 'undefined')) {
+    window.json2ts = json2ts;
+    window.json2ts.parse = parse;
+    window.json2ts.transform = transform;
+    window.json2ts.print = print;
+}
