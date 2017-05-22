@@ -4,6 +4,7 @@ import {transform} from "./transformer";
 
 export interface JsonTsOptions {
     namespace?: string
+    flow?: boolean
 }
 
 const defaults = {

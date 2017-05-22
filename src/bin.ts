@@ -14,6 +14,7 @@ const inputs = OrderedSet<string>(argv._);
 const defaults = {
     stdin: false,
     namespace: false,
+    flow: false,
 };
 
 // merged options with defaults

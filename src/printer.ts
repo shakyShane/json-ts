@@ -23,25 +23,33 @@ function typeDisplay(node: MemberNode): string {
     return node.types.join('|');
 }
 
-function interfaceDisplay (node: InterfaceNode, options: JsonTsOptions): string {
-    if (options.namespace) {
-        return `export interface ${node.name} {`
-    }
-    return `interface ${node.name} {`;
-}
-
 export function print(interfaceNodes: InterfaceNode[], options: JsonTsOptions): string {
+    const lineEnd = options.flow ? ',' : ';';
     const blocks = interfaceNodes
         .reverse()
         .map(node => {
             return [
-                interfaceDisplay(node, options),
-                node.members.map((str: MemberNode) => `  ${memberName(str)}: ${typeDisplay(str)};`).join('\n'),
+                interfaceLine(node),
+                node.members.map(memberLine).join('\n'),
                 `}`
             ].join('\n')
         }).join('\n\n');
 
     return wrapper(blocks, options) + '\n';
+
+    function interfaceLine (node: InterfaceNode): string {
+        if (options.flow) {
+            return `export type ${node.name} = {`
+        }
+        if (options.namespace) {
+            return `export interface ${node.name} {`
+        }
+        return `interface ${node.name} {`;
+    }
+
+    function memberLine(node: MemberNode): string {
+        return `  ${memberName(node)}: ${typeDisplay(node)}${lineEnd}`
+    }
 }
 
 function wrapper(blocks, options) {
