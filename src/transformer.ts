@@ -82,6 +82,8 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                                 return prev.update('types', function (types) {
                                     if (types.contains('Array<any>')) {
                                         return matchingFromIncoming.get('types');
+                                    } else if (matchingFromIncoming.get('types').contains('Array<any>')) {
+                                        return types.concat(matchingFromIncoming.get('types').filter(x => x !== 'Array<any>'))
                                     }
                                     return types.concat(matchingFromIncoming.get('types'));
                                 });
@@ -135,13 +137,15 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                 const children = getInterfaces(node.body);
                 const newInterface = createOne(node);
                 const matches = getMatches(newInterface.members);
+
                 if (matches.length === 0) {
                     const asMap = fromJS(newInterface);
                     memberStack.push(asMap);
                     const newAsList = List([asMap]);
                     return acc.concat(newAsList, children);
                 }
-                return acc;
+
+                return acc.concat(children);
             }
 
             if (node.kind === ts.SyntaxKind.ArrayLiteralExpression) {
@@ -153,10 +157,10 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                 });
 
                 const other = getInterfaces(decorated);
-                
+
                 return acc.concat(other);
             }
-
+            
             return acc;
 
         }, OrderedSet([]) as any);
@@ -181,11 +185,11 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
 
                     const newInterface = createOne(node);
                     const matches = getMatches(newInterface.members);
-
+                    
                     const interfaceName = matches.length
                         ? matches[0].get('name')
                         : newInterface.name;
-
+                    
                     return {
                         name: node.name,
                         optional: false,

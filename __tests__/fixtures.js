@@ -12,7 +12,13 @@ it('matches magento', function () {
     expect(json2ts(gmaps)).toMatchSnapshot();
 });
 
+it('matches magento categories', function () {
+    const magentoCategories = data('__tests__/magento/categories.json');
+    expect(json2ts(magentoCategories)).toMatchSnapshot();
+});
+
 it('matches petition', function () {
     const gmaps = data('__tests__/petition/input.json');
     expect(json2ts(gmaps)).toMatchSnapshot();
 });
+
