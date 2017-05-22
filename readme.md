@@ -104,7 +104,7 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
 - [x] support array types
 - [x] support boolean types
 - [x] support null types
-- [ ] output types for Flow via `--flow`
+- [x] output types for Flow via `--flow`
 - [x] PascalCase as default for all interface names
 - [x] de-dupe interfaces (it's dumb atm, POC)
 - [x] de-dupe interfaces where propname differs, but members are the same
