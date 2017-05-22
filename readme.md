@@ -67,7 +67,7 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
 
 ## Options
 
- - *namespace: string* - if provided, interfaces will be wrapped in a namespace (see below)
+ - **namespace: string** - if provided, interfaces will be wrapped in a namespace (see below)
     ```bash
     # usage
     json-ts <filename> --namespace <namespace_name> 
@@ -75,7 +75,7 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
     # example
     json-ts data/my-file.json --namespace API
     ```
- - *flow: boolean* - output types in Flow format.
+ - **flow: boolean** - output types in Flow format.
     ```bash
     # usage
     json-ts <filename> --flow 
@@ -83,7 +83,7 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
     # example
     json-ts data/my-file.json --flow
     ```
- - *prefix: string* - override the `I` prefix on interface names
+ - **prefix: string** - override the `I` prefix on interface names
     ```bash
     # usage
     json-ts <filename> --prefix <prefix_string> 
