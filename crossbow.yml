@@ -7,3 +7,24 @@ tasks:
         @npm browserify dist/index.js -d |
         exorcist dist/json-ts.js.map
         > dist/json-ts.js
+
+  uglify:
+    - ifChanged: dist/json-ts.js
+      tasks: >
+        @npm uglifyjs
+        --compress --mangle --
+        dist/json-ts.js > dist/json-ts.min.js
+        && cp dist/json-ts.min.js site/dist/json-ts.min.js
+    - ifChanged: site/lib/codemirror.js
+      tasks: >
+        @npm uglifyjs
+        --compress --mangle --
+        site/lib/codemirror.js > site/dist/codemirror.js
+    - ifChanged: site/javascript/javascript.js
+      tasks: >
+        @npm uglifyjs
+        --compress --mangle --
+        site/javascript/javascript.js > site/dist/javascript.js
+
+  copy: >
+    @sh cp dist/json-ts.min.js site/json-ts.min.js

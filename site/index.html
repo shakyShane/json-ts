@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Convert JSON to Typescript or Flow definitions</title>
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            font: 15px/1.8 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif
+        }
+        @media (min-width: 600px) {
+            .wrapper {
+                display: grid;
+                grid-template-columns: 50% 50%;
+                background-color: #fff;
+                color: #444;
+            }
+        }
+        .header {
+            /*height: 40px;*/
+            text-align: center;
+            padding: .5em 0;
+        }
+        .wrapper.header {
+            background: #294E80;
+            color: white;
+            height: 57px;
+            /*padding-left: 1em;*/
+            /*padding-right: 1em;*/
+        }
+        .status {
+            position: fixed;
+            bottom: 0;
+            z-index: 2;
+            padding: 10px;
+            width: 100%;
+        }
+        .status.error {
+            color: red;
+            background: rgba(254, 205, 205, .8);
+        }
+        .status.success {
+            color: blue;
+            background: rgba(210, 225, 244, .8);
+        }
+        .debug {
+            margin: 0;
+        }
+        .hint {
+            padding: .5em 1em;
+            background: #294E80;
+            color: white;
+        }
+        .hint p {
+            margin: 0;
+        }
+        .hint.hint--left {
+            background: #3667a9;
+        }
+        .CodeMirror {
+            /* Set height, width, borders, and global font properties here */
+            height: 300px;
+
+            font-size: 12px;
+        }
+        @media (min-width: 600px) {
+            .CodeMirror {
+                height: calc(100vh - 80px);
+            }
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1><code>json-ts</code> | <a href="#">Github</a></h1>
+</header>
+<div class="wrapper">
+    <div class="first">
+        <div class="hint hint--left"><p>Enter valid JSON here:</p></div>
+        <div id="app" class="editor"></div>
+    </div>
+    <div class="second">
+        <div class="hint"><p>Here's your definition file</p></div>
+        <div id="ts" class="editor">
+
+        </div>
+    </div>
+</div>
+<div class="status success"><p class="debug">Try me out!</p></div>
+
+<script src="dist/codemirror.js"></script>
+<script src="dist/javascript.js"></script>
+<script src="dist/json-ts.min.js"></script>
+<script>
+
+    const iniialJson = `{
+    "author": "shakyShane",
+    "profile": {
+        "links": [
+            {
+              "name": "twitter",
+              "url": "https://twitter.com/shaneOsbourne"
+            },
+            {
+              "name": "Medium",
+              "url": "https://medium.com/@shakyShane"
+            }
+        ]
+    },
+    "location": null,
+    "email": null,
+    "hireable": true,
+    "bio": null,
+    "public_repos": 145,
+    "public_gists": 69,
+    "followers": 298,
+    "following": 1,
+    "created_at": "2012-04-14T17:34:37Z",
+    "updated_at": "2017-04-26T12:43:35Z"
+}`;
+    const statusElem = document.querySelector('.status');
+    const statusText = document.querySelector('.debug');
+    const ts = json2ts(iniialJson);
+
+    var tsOutput = CodeMirror(document.querySelector('#ts'), {
+        value: ts,
+        mode: {name: "javascript", typescript: true}
+    });
+    var jsonInput = CodeMirror(document.querySelector('#app'), {
+        value: iniialJson,
+        mode: {name: "javascript", json: true}
+    });
+
+    jsonInput.on('change', function (obj) {
+        try {
+            const json = jsonInput.getValue();
+            if (json && json.length > 3) {
+                JSON.parse(json);
+                const ts = json2ts(json);
+                tsOutput.setValue(ts);
+                status('success', 'All good!');
+            }
+        } catch (e) {
+            status('error', `Error parsing JSON: ${e.message}`);
+            console.log('Some JSON error?', e.message);
+        }
+    });
+    function status(type, text) {
+        statusElem.classList.remove('success');
+        statusElem.classList.remove('error');
+        statusElem.classList.add(type);
+        statusText.textContent = text;
+    }
+</script>
+</body>
+</html>
