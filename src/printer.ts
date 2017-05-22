@@ -39,16 +39,20 @@ export function print(interfaceNodes: InterfaceNode[], options: JsonTsOptions): 
 
     function interfaceLine (node: InterfaceNode): string {
         if (options.flow) {
-            return `export type ${node.name} = {`
+            return `export type ${nameDisplay(node)} = {`
         }
         if (options.namespace) {
-            return `export interface ${node.name} {`
+            return `export interface ${nameDisplay(node)} {`
         }
-        return `interface ${node.name} {`;
+        return `interface ${nameDisplay(node)} {`;
     }
 
     function memberLine(node: MemberNode): string {
         return `  ${memberName(node)}: ${typeDisplay(node)}${lineEnd}`
+    }
+
+    function nameDisplay(node: InterfaceNode) {
+        return node.name;
     }
 }
 

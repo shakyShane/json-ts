@@ -117,10 +117,8 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
 
         const thisMembers = getMembers(node.body);
 
-        const newInterfaceName = 'I' + node.name[0].toUpperCase() + node.name.slice(1);
-
         const mem = {
-            name: newInterfaceName,
+            name: newInterfaceName(node),
             original: node.name,
             members: thisMembers
         };
@@ -240,6 +238,13 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         }
         return 'any';
     }
+    function newInterfaceName(node: ParsedNode) {
+        const base = node.name[0].toUpperCase() + node.name.slice(1);
+        if (options.prefix) {
+            return options.prefix + base;
+        }
+        return base;
+    }
     function upper(string) {
         return string[0].toUpperCase() + string.slice(1);
     }
@@ -247,7 +252,10 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         return startCase(toLower(input)).replace(/ /g, '');
     }
     function getArrayInterfaceItemName(input) {
-        return pascalCase(`I_${input}_Item`)
+        if (options.prefix) {
+            return pascalCase(`${options.prefix}_${input}_Item`);
+        }
+        return pascalCase(`${input}_Item`)
     }
     function getArrayItemName(input) {
         return pascalCase(`${input}_Item`)

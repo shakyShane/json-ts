@@ -80,7 +80,7 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
 
 ### options
 
-- [ ] Allow choice of `I` prefix on interface names
+- [x] Allow choice of `I` prefix on interface names
 - [ ] Allow naming of RootObject
 - [ ] Allow choice of spaces/tabs
 
