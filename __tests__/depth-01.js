@@ -1,4 +1,4 @@
-const {json2ts} = require('../');
+const json2ts = require('../').json2ts;
 const assert = require('assert');
 
 const json = `{

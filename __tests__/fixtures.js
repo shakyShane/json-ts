@@ -1,4 +1,4 @@
-const {json2ts} = require('../');
+const json2ts = require('../').json2ts;
 const {readFileSync} = require('fs');
 const data = (name) => readFileSync(name, 'utf8');
 
