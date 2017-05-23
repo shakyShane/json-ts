@@ -24,18 +24,6 @@
                 color: #444;
             }
         }
-        .header {
-            /*height: 40px;*/
-            text-align: center;
-            padding: .5em 0;
-        }
-        .wrapper.header {
-            background: #294E80;
-            color: white;
-            height: 57px;
-            /*padding-left: 1em;*/
-            /*padding-right: 1em;*/
-        }
         .status {
             position: fixed;
             bottom: 0;
@@ -71,28 +59,122 @@
 
             font-size: 12px;
         }
-        @media (min-width: 600px) {
-            .CodeMirror {
-                height: calc(100vh - 80px);
-            }
+        .header {
+            padding: 0;
+            background: #294E80;
+            color: white;
+            text-align: center;w
+        }
+        .logo {
+            padding: .5em 1em;
+        }
+        .header a {
+            color: white;
         }
         .header h1 {
             margin: 0;
             font-size: 12px;
+            font-weight: normal;
+        }
+        .controls {
+            font-size: 12px;
+            background: #3667a9;
+            padding: 1em 0;
+            display: grid;
+            grid-template-columns: 50% 50%;
+        }
+        .controls p {
+            margin: 0;
+        }
+        .field {
+            line-height: 1;
+            padding: 0 1em;
+        }
+        .field.check {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .field label {
+            text-align: left;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .field label span {
+            display: block;
+            padding: .2em 0;
+            font-size: 14px;
+        }
+        .field input[type="text"] {
+            width: 100%;
+            height: 35px;
+            padding-left: 10px;
+        }
+        @media (min-width: 600px) {
+            .CodeMirror {
+                height: calc(100vh - 80px);
+            }
+            .header {
+                display: flex;
+            }
+            .controls {
+                display: flex;
+                flex: 1;
+                align-items: center;
+                padding-left: 2em;
+            }
+            .field {
+                display: flex;
+                align-items: center;
+            }
+            .field label {
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+            .logo {
+                display: flex;
+                align-items: center;
+            }
         }
     </style>
 </head>
 <body>
 <header class="header">
-    <h1><code>json-ts</code> | <a href="#">Github</a></h1>
+    <div class="logo">
+        <h1><code>npm i -g json-ts</code> <span style="color: #5474af;">|</span> <a href="https://github.com/shakyShane/json-ts">Github</a></h1>
+    </div>
+    <div class="controls">
+        <div class="field check">
+            <label for="flow">
+                Flow
+                <input type="checkbox" id="flow" name="flow">
+            </label>
+        </div>
+        <div class="field">
+            <label for="namespace">
+                <span>Namespace (TS only)</span>
+            </label>
+            <input type="text" id="namespace" name="namespace" placeholder="leave empty for none">
+        </div>
+        <div class="field">
+            <label for="root-name">
+                <span>Root Name</span>
+            </label>
+            <input type="text" id="root-name" name="root-name" value="RootObject">
+        </div>
+        <div class="field">
+            <label for="prefix">
+                <span>Prefix</span>
+            </label>
+            <input type="text" id="prefix" name="prefix" value="I">
+        </div>
+    </div>
 </header>
 <div class="wrapper">
     <div class="first">
-        <div class="hint hint--left"><p>Enter valid JSON here:</p></div>
         <div id="app" class="editor"></div>
     </div>
     <div class="second">
-        <div class="hint"><p>Here's your definition file</p></div>
         <div id="ts" class="editor">
 
         </div>
@@ -130,38 +212,76 @@
     "created_at": "2012-04-14T17:34:37Z",
     "updated_at": "2017-04-26T12:43:35Z"
 }`;
-    const statusElem = document.querySelector('.status');
-    const statusText = document.querySelector('.debug');
-    const ts = json2ts(iniialJson);
+    const $ = document.querySelector.bind(document);
+    const statusElem = $('.status');
+    const statusText = $('.debug');
+    const flow       = $('#flow');
+    const rootName   = $('#root-name');
+    const prefix     = $('#prefix');
+    const namespace  = $('#namespace');
+    let defaults = {
+      flow: false,
+      namespace: '',
+      prefix: 'I',
+      rootName: 'RootObject'
+    };
 
-    var tsOutput = CodeMirror(document.querySelector('#ts'), {
+    flow.addEventListener('change', function() {
+      setOutput(jsonInput.getValue(), options({flow: flow.checked}));
+    });
+    namespace.addEventListener('input', function() {
+      setOutput(jsonInput.getValue(), options({namespace: namespace.value}));
+    });
+    rootName.addEventListener('input', function() {
+      setOutput(jsonInput.getValue(), options({rootName: rootName.value}));
+    });
+    rootName.addEventListener('input', function() {
+      setOutput(jsonInput.getValue(), options({rootName: rootName.value}));
+    });
+    prefix.addEventListener('input', function() {
+      setOutput(jsonInput.getValue(), options({prefix: prefix.value}));
+    });
+    const ts = json2ts(iniialJson, defaults);
+
+    var tsOutput = CodeMirror($('#ts'), {
         value: ts,
         mode: {name: "javascript", typescript: true}
     });
-    var jsonInput = CodeMirror(document.querySelector('#app'), {
+    var jsonInput = CodeMirror($('#app'), {
         value: iniialJson,
         mode: {name: "javascript", json: true}
     });
 
+    function setOutput(json, options) {
+      if (json && json.length > 3) {
+        JSON.parse(json);
+        const ts = json2ts(json, options);
+        tsOutput.setValue(ts);
+        status('success', 'All good!');
+      }
+    }
+
     jsonInput.on('change', function (obj) {
         try {
-            const json = jsonInput.getValue();
-            if (json && json.length > 3) {
-                JSON.parse(json);
-                const ts = json2ts(json);
-                tsOutput.setValue(ts);
-                status('success', 'All good!');
-            }
+          setOutput(jsonInput.getValue());
         } catch (e) {
             status('error', `Error parsing JSON: ${e.message}`);
             console.log('Some JSON error?', e.message);
         }
     });
+
     function status(type, text) {
         statusElem.classList.remove('success');
         statusElem.classList.remove('error');
         statusElem.classList.add(type);
         statusText.textContent = text;
+    }
+    function options(incoming) {
+      defaults = Object.assign({},
+          defaults,
+          incoming
+      );
+      return defaults;
     }
 </script>
 </body>
