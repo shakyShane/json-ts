@@ -1,4 +1,4 @@
-import {InterfaceNode, MemberNode} from "./transformer";
+import {InterfaceNode, log, MemberNode} from "./transformer";
 import needsQuotes = require('needsquotes');
 import {JsonTsOptions} from "./index";
 
@@ -24,6 +24,7 @@ function typeDisplay(node: MemberNode): string {
 }
 
 export function print(interfaceNodes: InterfaceNode[], options: JsonTsOptions): string {
+    // log(interfaceNodes);
     const lineEnd = options.flow ? ',' : ';';
     const blocks = interfaceNodes
         .reverse()
@@ -47,7 +48,16 @@ export function print(interfaceNodes: InterfaceNode[], options: JsonTsOptions): 
         return `interface ${nameDisplay(node)} {`;
     }
 
-    function memberLine(node: MemberNode): string {
+    function memberLine(node: MemberNode, indent = 0): string {
+        const indentString = new Array(indent).join('-');
+        if (node.types[0] === '__ObjectLiteralExpression') {
+            return [`${memberName(node)}: {`,
+                 node.members.map(x => memberLine(x, indent + 4)),
+                `}`
+            ].map(x => {
+                return `${x}`;
+            }).join('\n');
+        }
         return `  ${memberName(node)}: ${typeDisplay(node)}${lineEnd}`
     }
 

@@ -8,7 +8,7 @@ import {JsonTsOptions} from "./index";
 const {startCase, toLower} = require('../_');
 const { Map, is, fromJS} = Immutable;
 
-const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
+export const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
 export interface MemberNode {
     types: Set<string>
@@ -135,7 +135,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
             if (node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
 
                 // gather any interfaces for this node's children
-                const children = getInterfaces(node.body);
+                // const children = getInterfaces(node.body);
 
                 if (node.interfaceCandidate) {
 
@@ -146,11 +146,13 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                         const asMap = fromJS(newInterface);
                         memberStack.push(asMap);
                         const newAsList = List([asMap]);
-                        return acc.concat(newAsList, children);
+                        return acc.concat(newAsList, getInterfaces(node.body));
                     }
+                } else {
+                    // log(node);
                 }
 
-                return acc.concat(children);
+                return acc.concat(getInterfaces(node.body));
             }
 
             if (node.kind === ts.SyntaxKind.ArrayLiteralExpression) {
@@ -188,18 +190,27 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                 }
                 case ts.SyntaxKind.ObjectLiteralExpression: {
 
-                    const newInterface = createOne(node);
-                    const matches = getMatches(newInterface.members);
-                    
-                    const interfaceName = matches.length
-                        ? matches[0].get('name')
-                        : newInterface.name;
-                    
-                    return {
-                        name: node.name,
-                        optional: false,
-                        types: Set([interfaceName]),
-                        members: []
+                    if (node.interfaceCandidate) {
+                        const newInterface = createOne(node);
+                        const matches = getMatches(newInterface.members);
+
+                        const interfaceName = matches.length
+                            ? matches[0].get('name')
+                            : newInterface.name;
+
+                        return {
+                            name: node.name,
+                            optional: false,
+                            types: Set([interfaceName]),
+                            members: []
+                        }
+                    } else {
+                        return {
+                            name: node.name,
+                            optional: false,
+                            types: Set(['__ObjectLiteralExpression']),
+                            members: getMembers(node.body)
+                        }
                     }
                 }
                 case ts.SyntaxKind.ArrayLiteralExpression: {
