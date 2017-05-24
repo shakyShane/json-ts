@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import {JsonTsOptions} from "./index";
+import needsQuotes = require("needsquotes");
 
 export interface ParsedNode {
     kind: ts.SyntaxKind
@@ -7,6 +8,7 @@ export interface ParsedNode {
     name?: string
     value?: any
     body?: ParsedNode[]
+    interfaceCandidate?: boolean
 }
 
 function walk(sourceFile: ts.SourceFile): ParsedNode[] {
@@ -80,10 +82,13 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
                         break;
                     }
                     case ts.SyntaxKind.ObjectLiteralExpression: {
-                        // console.log('OBJ', prop.name.text);
+                        const quotes = needsQuotes(prop.name.text).needsQuotes;
+                        const interfaceCandidate = (quotes === false);
+
                         const elem = {
                             name: prop.name.text,
                             body: [],
+                            interfaceCandidate,
                             kind: ts.SyntaxKind.ObjectLiteralExpression,
                             _kind: `ObjectLiteralExpression`
                         };

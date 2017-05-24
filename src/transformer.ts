@@ -43,6 +43,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         kind: ts.SyntaxKind.ObjectLiteralExpression,
         _kind: 'ObjectLiteralExpression',
         name: options.rootName,
+        interfaceCandidate: true,
         body: stack
     }];
 
@@ -135,14 +136,18 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
 
                 // gather any interfaces for this node's children
                 const children = getInterfaces(node.body);
-                const newInterface = createOne(node);
-                const matches = getMatches(newInterface.members);
 
-                if (matches.length === 0) {
-                    const asMap = fromJS(newInterface);
-                    memberStack.push(asMap);
-                    const newAsList = List([asMap]);
-                    return acc.concat(newAsList, children);
+                if (node.interfaceCandidate) {
+
+                    const newInterface = createOne(node);
+                    const matches = getMatches(newInterface.members);
+
+                    if (matches.length === 0) {
+                        const asMap = fromJS(newInterface);
+                        memberStack.push(asMap);
+                        const newAsList = List([asMap]);
+                        return acc.concat(newAsList, children);
+                    }
                 }
 
                 return acc.concat(children);
@@ -160,7 +165,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
 
                 return acc.concat(other);
             }
-            
+
             return acc;
 
         }, OrderedSet([]) as any);
