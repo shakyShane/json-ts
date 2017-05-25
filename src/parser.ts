@@ -40,6 +40,7 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
                 const elem = {
                     kind: ts.SyntaxKind.ObjectLiteralExpression,
                     _kind: `ObjectLiteralExpression`,
+                    interfaceCandidate: true,
                     body: [],
                 };
                 push(elem);

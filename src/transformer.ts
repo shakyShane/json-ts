@@ -137,19 +137,19 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                 // gather any interfaces for this node's children
                 // const children = getInterfaces(node.body);
 
+                const newInterface = createOne(node);
+                const matches = getMatches(newInterface.members);
+                const asMap = fromJS(newInterface);
+
                 if (node.interfaceCandidate) {
-
-                    const newInterface = createOne(node);
-                    const matches = getMatches(newInterface.members);
-
                     if (matches.length === 0) {
-                        const asMap = fromJS(newInterface);
                         memberStack.push(asMap);
                         const newAsList = List([asMap]);
                         return acc.concat(newAsList, getInterfaces(node.body));
+                    } else {
+                        const newAsList = List([asMap]);
+                        return acc.concat(newAsList, getInterfaces(node.body));
                     }
-                } else {
-                    // log(node);
                 }
 
                 return acc.concat(getInterfaces(node.body));
