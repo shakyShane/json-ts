@@ -9,7 +9,7 @@ export interface JsonTsOptions {
     rootName?: string
 }
 
-const defaults = {
+export const defaults = {
     prefix: "I",
     rootName: "RootObject"
 };
