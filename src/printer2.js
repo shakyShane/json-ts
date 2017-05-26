@@ -36,16 +36,7 @@ interface IBody {
 
 const json = `
 {
-    "/get <api>": {
-        "headers": [
-            {"content": "json"}        
-        ]    
-    },
-    "/post <api>": {
-        "headers": [
-            {"content": "json"}        
-        ]    
-    }
+    "/get <api>": null
 }
 `;
 
@@ -127,6 +118,16 @@ function getMembers(members) {
             }
             case ts.SyntaxKind.StringKeyword:
             case ts.SyntaxKind.NumberKeyword: {
+                const item = namedProp(member.name);
+                item.type = ts.createNode(member.kind);
+                return item;
+            }
+            case ts.SyntaxKind.BooleanKeyword: {
+                const item = namedProp(member.name);
+                item.type = ts.createNode(member.kind);
+                return item;
+            }
+            case ts.SyntaxKind.NullKeyword: {
                 const item = namedProp(member.name);
                 item.type = ts.createNode(member.kind);
                 return item;

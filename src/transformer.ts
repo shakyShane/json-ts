@@ -6,7 +6,7 @@ import needsQuotes = require('needsquotes');
 import {JsonTsOptions} from "./index";
 
 const {startCase, toLower} = require('../_');
-const { Map, is, fromJS, Set} = Immutable;
+const { Map, is, fromJS} = Immutable;
 
 export const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
@@ -179,10 +179,24 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         const members = stack.map(node => {
             switch(node.kind) {
                 case ts.SyntaxKind.NullKeyword:
-                    return {name: node.name, optional: false, types: Set(['null']),  members: []};
+                    return {
+                        name: node.name,
+                        optional: false,
+                        kind: ts.SyntaxKind.NullKeyword,
+                        _kind: ts.SyntaxKind[ts.SyntaxKind.NullKeyword],
+                        types: Set(['null']),
+                        members: []
+                    };
                 case ts.SyntaxKind.FalseKeyword:
                 case ts.SyntaxKind.TrueKeyword: {
-                    return {name: node.name, optional: false, types: Set(['boolean']),  members: []}
+                    return {
+                        name: node.name,
+                        optional: false,
+                        kind: ts.SyntaxKind.BooleanKeyword,
+                        _kind: ts.SyntaxKind[ts.SyntaxKind.BooleanKeyword],
+                        types: Set(['boolean']),
+                        members: []
+                    }
                 }
                 case ts.SyntaxKind.StringLiteral: {
                     return {name: node.name,
@@ -265,9 +279,13 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
             const kind = kinds.first();
             switch(kind) {
                 case ts.SyntaxKind.NullKeyword:
-                    return 'null';
+                    return ts.createNode(ts.SyntaxKind.NullKeyword);
                 case ts.SyntaxKind.StringLiteral:
                     return ts.createNode(ts.SyntaxKind.StringKeyword);
+                case ts.SyntaxKind.TrueKeyword:
+                case ts.SyntaxKind.FalseKeyword: {
+                    return ts.createNode(ts.SyntaxKind.BooleanKeyword);
+                }
                 case ts.SyntaxKind.NumericLiteral:
                     return ts.createNode(ts.SyntaxKind.NumberKeyword);
                 case ts.SyntaxKind.ObjectLiteralExpression:
@@ -277,7 +295,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
             }
         } else if (kinds.size === 2) { // a mix of true/false is still a boolean[];
             if (kinds.has(ts.SyntaxKind.TrueKeyword) && kinds.has(ts.SyntaxKind.FalseKeyword)) {
-                return 'boolean';
+                return ts.createNode(ts.SyntaxKind.BooleanKeyword);
             }
         }
         return ts.createNode(ts.SyntaxKind.AnyKeyword);
