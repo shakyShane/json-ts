@@ -6,7 +6,7 @@ import needsQuotes = require('needsquotes');
 import {JsonTsOptions} from "./index";
 
 const {startCase, toLower} = require('../_');
-const { Map, is, fromJS} = Immutable;
+const { Map, is, fromJS, Set} = Immutable;
 
 export const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
@@ -121,6 +121,8 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         const thisMembers = getMembers(node.body);
 
         const mem = {
+            kind: ts.SyntaxKind.InterfaceDeclaration,
+            _kind: ts.SyntaxKind[ts.SyntaxKind.InterfaceDeclaration],
             name: newInterfaceName(node),
             original: node.name,
             members: thisMembers
@@ -183,10 +185,23 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                     return {name: node.name, optional: false, types: Set(['boolean']),  members: []}
                 }
                 case ts.SyntaxKind.StringLiteral: {
-                    return {name: node.name, optional: false, types: Set(['string']),  members: []}
+                    return {name: node.name,
+                        optional: false,
+                        types: Set(['string']),
+                        kind: ts.SyntaxKind.StringKeyword,
+                        _kind: ts.SyntaxKind[ts.SyntaxKind.StringKeyword],
+                        members: []
+                    }
                 }
                 case ts.SyntaxKind.NumericLiteral: {
-                    return {name: node.name, optional: false, types: Set(['number']),  members: []}
+                    return {
+                        name: node.name,
+                        optional: false,
+                        types: Set(['number']),
+                        kind: ts.SyntaxKind.NumberKeyword,
+                        _kind: ts.SyntaxKind[ts.SyntaxKind.NumberKeyword],
+                        members: []
+                    }
                 }
                 case ts.SyntaxKind.ObjectLiteralExpression: {
 
@@ -199,6 +214,8 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                             : newInterface.name;
 
                         return {
+                            kind: ts.SyntaxKind.TypeReference,
+                            _kind: ts.SyntaxKind[ts.SyntaxKind.TypeReference],
                             name: node.name,
                             optional: false,
                             types: Set([interfaceName]),
@@ -206,6 +223,8 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                         }
                     } else {
                         return {
+                            kind: ts.SyntaxKind.TypeLiteral,
+                            _kind: ts.SyntaxKind[ts.SyntaxKind.TypeLiteral],
                             name: node.name,
                             optional: false,
                             types: Set(['__ObjectLiteralExpression']),
@@ -217,16 +236,20 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                     if (node.body.length) {
                         const memberTypes = getArrayElementsType(node);
                         return {
+                            kind: ts.SyntaxKind.ArrayType,
+                            _kind: ts.SyntaxKind[ts.SyntaxKind.ArrayType],
                             name: node.name,
                             optional: false,
-                            types: Set([`${memberTypes}[]`]),
+                            types: Set(fromJS([memberTypes])),
                             members: [],
                         };
                     } else {
                         return {
+                            kind: ts.SyntaxKind.ArrayType,
+                            _kind: ts.SyntaxKind[ts.SyntaxKind.ArrayType],
                             name: node.name,
                             optional: false,
-                            types: Set([`Array<any>`]),
+                            types: Set(fromJS([])),
                             members: [],
                         };
                     }
@@ -244,19 +267,20 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                 case ts.SyntaxKind.NullKeyword:
                     return 'null';
                 case ts.SyntaxKind.StringLiteral:
-                    return 'string';
+                    return ts.createNode(ts.SyntaxKind.StringKeyword);
                 case ts.SyntaxKind.NumericLiteral:
-                    return 'number';
+                    return ts.createNode(ts.SyntaxKind.NumberKeyword);
                 case ts.SyntaxKind.ObjectLiteralExpression:
-                    return getArrayInterfaceItemName(node.name);
-                default: return 'any';
+                    const item = ts.createTypeReferenceNode(getArrayInterfaceItemName(node.name));
+                    return item;
+                default: return ts.createNode(ts.SyntaxKind.AnyKeyword);
             }
         } else if (kinds.size === 2) { // a mix of true/false is still a boolean[];
             if (kinds.has(ts.SyntaxKind.TrueKeyword) && kinds.has(ts.SyntaxKind.FalseKeyword)) {
                 return 'boolean';
             }
         }
-        return 'any';
+        return ts.createNode(ts.SyntaxKind.AnyKeyword);
     }
     function newInterfaceName(node: ParsedNode) {
         const base = node.name[0].toUpperCase() + node.name.slice(1);
@@ -271,7 +295,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
     function pascalCase(input) {
         return startCase(toLower(input)).replace(/ /g, '');
     }
-    function getArrayInterfaceItemName(input) {
+    function getArrayInterfaceItemName(input): string {
         if (options.prefix) {
             return pascalCase(`${options.prefix}_${input}_Item`);
         }
