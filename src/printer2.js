@@ -36,7 +36,15 @@ interface IBody {
 
 const json = `
 {
-    "/get <api>": null
+    "cards": [
+        {
+        "name":"shane"
+        },
+        {
+        "name":"kittie",
+        "age": 20
+        }
+    ]
 }
 `;
 
@@ -49,29 +57,20 @@ const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
 });
 
-function namedProp(name) {
-    const qs = nq(name);
+function namedProp(member) {
+    const qs = nq(member.name);
 
-    const output = qs.needsQuotes ? qs.quotedValue : name;
+    const output = qs.needsQuotes ? qs.quotedValue : member.name;
 
     const prop = ts.createNode(ts.SyntaxKind.PropertySignature);
     prop.name = ts.createIdentifier(output);
+
+    if (member.optional) {
+        prop.questionToken = ts.createNode(ts.SyntaxKind.QuestionToken);
+    }
+
     return prop;
 }
-
-const main  = ts.createNode(ts.SyntaxKind.InterfaceDeclaration);
-main.name   = ts.createIdentifier('IRootObject');
-const prop  = namedProp('name');
-const child = namedProp('other');
-child.type = ts.createNode(ts.SyntaxKind.StringKeyword);
-
-prop.type = ts.createTypeLiteralNode([
-    child
-]);
-
-main.members = [
-    prop
-];
 
 const stack = [];
 
@@ -94,7 +93,7 @@ function getMembers(members) {
     return members.map(member => {
         switch(member.kind) {
             case ts.SyntaxKind.ArrayType: {
-                const item = namedProp(member.name);
+                const item = namedProp(member);
                 if (member.types.length === 0) {
                     item.type = ts.createArrayTypeNode(ts.SyntaxKind.AnyKeyword);
                 } else {
@@ -103,12 +102,12 @@ function getMembers(members) {
                 return item;
             }
             case ts.SyntaxKind.TypeLiteral: {
-                const item = namedProp(member.name);
+                const item = namedProp(member);
                 item.type = ts.createTypeLiteralNode(getMembers(member.members));
                 return item;
             }
             case ts.SyntaxKind.TypeReference: {
-                const item = namedProp(member.name);
+                const item = namedProp(member);
                 if (member.types.length === 1) {
                     item.type = ts.createTypeReferenceNode(member.types[0]);
                 } else {
@@ -118,17 +117,17 @@ function getMembers(members) {
             }
             case ts.SyntaxKind.StringKeyword:
             case ts.SyntaxKind.NumberKeyword: {
-                const item = namedProp(member.name);
+                const item = namedProp(member);
                 item.type = ts.createNode(member.kind);
                 return item;
             }
             case ts.SyntaxKind.BooleanKeyword: {
-                const item = namedProp(member.name);
+                const item = namedProp(member);
                 item.type = ts.createNode(member.kind);
                 return item;
             }
             case ts.SyntaxKind.NullKeyword: {
-                const item = namedProp(member.name);
+                const item = namedProp(member);
                 item.type = ts.createNode(member.kind);
                 return item;
             }
