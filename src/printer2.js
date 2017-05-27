@@ -142,27 +142,57 @@ const json3 = `
 {
     shane: [9, "1"]
 }
-`
+`;
 
 // const outgoing = transform(parse(json3, defaults), defaults);
 // console.log(JSON.stringify(outgoing, null, 2));
 
 // var res1 = ts.createSourceFile('module', '', ts.ModuleKind.None);
 var res1 = ts.createSourceFile('module', content, ts.ModuleKind.None);
-console.log(res1.statements[3].statement);
+// console.log(res1.statements[3].statement.expression.typeArguments[0]);
 
-const labeledStatement = ts.createNode(ts.SyntaxKind.LabeledStatement);
-labeledStatement.label = ts.createIdentifier('kitti');
-labeledStatement.statement = ts.createStatement(ts.createIdentifier('Array'));
-console.log(labeledStatement.statement);
+const intr = ts.createNode(ts.SyntaxKind.InterfaceDeclaration);
+intr.name = ts.createIdentifier('MyInterFace');
 
+
+const prop = ts.createNode(ts.SyntaxKind.PropertySignature);
+prop.name = ts.createIdentifier('kittie');
+
+const labeledStatement = ts.createNode(ts.SyntaxKind.ExpressionStatement);
+
+const unionType = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, [
+    ts.createNode(ts.SyntaxKind.StringKeyword),
+    ts.createNode(ts.SyntaxKind.NumberKeyword),
+    ts.createNode(ts.SyntaxKind.BooleanKeyword),
+]);
+
+const nestedExpre = ts.createNode(ts.SyntaxKind.CallExpression);
+
+// const o = ts.createExpressionWithTypeArguments([unionType], ts.createIdentifier('Array'));
+nestedExpre.expression = ts.createIdentifier('Array');
+// nestedExpre.expression.flags = 0;
+nestedExpre.typeArguments = [unionType];
+nestedExpre.arguments = [];
+
+labeledStatement.expression = nestedExpre;
+// labeledStatement.expression.flags = 32768;
+
+prop.type = labeledStatement;
+
+intr.members = [prop];
+
+// console.log(prop.type.expression);
+
+// prop
+
+// console.log(props.);
+
+// console.log(labeledStatement.statement);
+
+// labeledStatement.statement = ts.createStatement(ts.createIdentifier('Array'));
 // console.log('%%%%^^^^');
 // console.log(res1.statements[3]);
 
-// const unionType = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, [
-//     ts.createNode(ts.SyntaxKind.StringKeyword),
-//     ts.createNode(ts.SyntaxKind.NumberKeyword)
-// ]);
 //
 // const typeArguments = [unionType];
 // const expression = ts.createIdentifier('Array');
@@ -184,7 +214,7 @@ const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
 });
 
-// console.log(printer.printNode(ts.EmitHint.Unspecified, expressionStatementNode, res1));
+console.log(printer.printNode(ts.EmitHint.Unspecified, intr, res1));
 
 // console.log(outgoing);
 // outgoing.forEach(item => {
