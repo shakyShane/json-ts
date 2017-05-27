@@ -107,7 +107,9 @@ const json = `
 `;
 
 const json2 = `
-{"simple": 1}
+{
+    "simple": "1"
+}
 `
 
 const outgoing = transform(parse(json2, defaults), defaults);

@@ -41,7 +41,7 @@ function namedProp(member) {
 
     const output = qs.needsQuotes ? qs.quotedValue : member.name;
 
-    const prop = ts.createNode(ts.SyntaxKind.PropertySignature);
+    const prop: any = ts.createNode(ts.SyntaxKind.PropertySignature);
     prop.name = ts.createIdentifier(output);
 
     if (member.optional) {
@@ -67,55 +67,12 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
     // return merged.toJS().reverse();
     return out.toJS();
 
-    function mergeDuplicateInterfaces(interfaces: List<ImmutableNode>): List<ImmutableNode> {
-        return interfaces.reduce((acc, current) => {
-
-            const currentName = current.get('name');
-            const currentMemberNames = current.get('members').map(x => x.get('name')).toSet();
-            const matching = acc.findIndex(x => x.get('name') === currentName);
-
-            // console.log(current.get('members').map(x => x.delete('optional')).toJS());
-            // console.log(current.get('members'));
-
-            if (matching > -1) {
-                return acc.updateIn([matching, 'members'], function (members) {
-                    return members
-                        .map(x => {
-                            if (currentMemberNames.has(x.get('name'))) {
-                                const matching = current.get('members').find(curr => curr.get('name') === x.get('name'))
-                                if (matching.get('kind') !== x.get('kind')) {
-
-                                    return x.set('kind', ts.SyntaxKind.UnionType)
-                                        .set('_kind', ts.SyntaxKind[ts.SyntaxKind.UnionType])
-                                        .update('types', types => types.concat(matching.get('types')))
-                                }
-                                return x;
-                            } else {
-                                return x.set('optional', true);
-                            }
-                        })
-                        // .mergeDeep(current.get('members'))
-                })
-            }
-
-            return acc.push(current);
-        }, List([]) as any);
-    }
-
     function createOne(node: ParsedNode): InterfaceNode {
 
         const thisMembers = getMembers(node.body);
-        const item   = ts.createNode(ts.SyntaxKind.InterfaceDeclaration);
-        item.name    = ts.createIdentifier(newInterfaceName(node));
-        item.members = ts.createNodeArray(thisMembers, false);
-
-        // const mem = {
-        //     kind: ts.SyntaxKind.InterfaceDeclaration,
-        //     _kind: ts.SyntaxKind[ts.SyntaxKind.InterfaceDeclaration],
-        //     name: newInterfaceName(node),
-        //     original: node.name,
-        //     members: thisMembers
-        // };
+        const item: any   = ts.createNode(ts.SyntaxKind.InterfaceDeclaration);
+        item.name         = ts.createIdentifier(newInterfaceName(node));
+        item.members      = ts.createNodeArray(thisMembers, false);
 
         return item;
     }
@@ -154,34 +111,34 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         }, OrderedSet([]) as any);
     }
 
-    function getMembers(stack: ParsedNode[]): MemberNode[] {
+    function getMembers(stack: ParsedNode[]) {
         const members = stack.map(node => {
             switch(node.kind) {
-            //     case ts.SyntaxKind.NullKeyword: {
-            //         const item = namedProp({name: node.name});
-            //         item.type = ts.createNode(ts.SyntaxKind.NullKeyword);
-            //         return {
-            //             name: node.name,
-            //             optional: false,
-            //             kind: ts.SyntaxKind.NullKeyword,
-            //             _kind: ts.SyntaxKind[ts.SyntaxKind.NullKeyword],
-            //             types: Set([fromJS(item)]),
-            //             members: []
-            //         };
-            //     }
-            //     case ts.SyntaxKind.FalseKeyword:
-            //     case ts.SyntaxKind.TrueKeyword: {
-            //         const item = namedProp({name: node.name});
-            //         item.type = ts.createNode(ts.SyntaxKind.BooleanKeyword);
-            //         return {
-            //             name: node.name,
-            //             optional: false,
-            //             kind: ts.SyntaxKind.BooleanKeyword,
-            //             _kind: ts.SyntaxKind[ts.SyntaxKind.BooleanKeyword],
-            //             types: Set([fromJS(item)]),
-            //             members: []
-            //         }
-            //     }
+                //     case ts.SyntaxKind.NullKeyword: {
+                //         const item = namedProp({name: node.name});
+                //         item.type = ts.createNode(ts.SyntaxKind.NullKeyword);
+                //         return {
+                //             name: node.name,
+                //             optional: false,
+                //             kind: ts.SyntaxKind.NullKeyword,
+                //             _kind: ts.SyntaxKind[ts.SyntaxKind.NullKeyword],
+                //             types: Set([fromJS(item)]),
+                //             members: []
+                //         };
+                //     }
+                //     case ts.SyntaxKind.FalseKeyword:
+                //     case ts.SyntaxKind.TrueKeyword: {
+                //         const item = namedProp({name: node.name});
+                //         item.type = ts.createNode(ts.SyntaxKind.BooleanKeyword);
+                //         return {
+                //             name: node.name,
+                //             optional: false,
+                //             kind: ts.SyntaxKind.BooleanKeyword,
+                //             _kind: ts.SyntaxKind[ts.SyntaxKind.BooleanKeyword],
+                //             types: Set([fromJS(item)]),
+                //             members: []
+                //         }
+                //     }
                 case ts.SyntaxKind.StringLiteral: {
                     const item = namedProp({name: node.name});
                     item.type = ts.createNode(ts.SyntaxKind.StringKeyword);
@@ -192,58 +149,58 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                     item.type = ts.createNode(ts.SyntaxKind.NumberKeyword);
                     return item;
                 }
-            //     case ts.SyntaxKind.ObjectLiteralExpression: {
-            //
-            //         if (node.interfaceCandidate) {
-            //             const newInterface = createOne(node);
-            //             // const matches = getMatches(newInterface.members);
-            //             //
-            //             // const interfaceName = matches.length
-            //             //     ? matches[0].get('name')
-            //             //     : newInterface.name;
-            //
-            //             return {
-            //                 kind: ts.SyntaxKind.TypeReference,
-            //                 _kind: ts.SyntaxKind[ts.SyntaxKind.TypeReference],
-            //                 name: node.name,
-            //                 optional: false,
-            //                 types: Set([newInterface.name]),
-            //                 members: []
-            //             }
-            //         } else {
-            //             return {
-            //                 kind: ts.SyntaxKind.TypeLiteral,
-            //                 _kind: ts.SyntaxKind[ts.SyntaxKind.TypeLiteral],
-            //                 name: node.name,
-            //                 optional: false,
-            //                 types: Set([]),
-            //                 members: getMembers(node.body)
-            //             }
-            //         }
-            //     }
-            //     case ts.SyntaxKind.ArrayLiteralExpression: {
-            //         if (node.body.length) {
-            //             const memberTypes = getArrayElementsType(node);
-            //             return {
-            //                 kind: ts.SyntaxKind.ArrayType,
-            //                 _kind: ts.SyntaxKind[ts.SyntaxKind.ArrayType],
-            //                 name: node.name,
-            //                 optional: false,
-            //                 types: Set(fromJS([memberTypes])),
-            //                 members: [],
-            //             };
-            //         } else {
-            //             return {
-            //                 kind: ts.SyntaxKind.ArrayType,
-            //                 _kind: ts.SyntaxKind[ts.SyntaxKind.ArrayType],
-            //                 name: node.name,
-            //                 optional: false,
-            //                 types: Set(fromJS([])),
-            //                 members: [],
-            //             };
-            //         }
-            //     }
-            return node;
+                    //     case ts.SyntaxKind.ObjectLiteralExpression: {
+                    //
+                    //         if (node.interfaceCandidate) {
+                    //             const newInterface = createOne(node);
+                    //             // const matches = getMatches(newInterface.members);
+                    //             //
+                    //             // const interfaceName = matches.length
+                    //             //     ? matches[0].get('name')
+                    //             //     : newInterface.name;
+                    //
+                    //             return {
+                    //                 kind: ts.SyntaxKind.TypeReference,
+                    //                 _kind: ts.SyntaxKind[ts.SyntaxKind.TypeReference],
+                    //                 name: node.name,
+                    //                 optional: false,
+                    //                 types: Set([newInterface.name]),
+                    //                 members: []
+                    //             }
+                    //         } else {
+                    //             return {
+                    //                 kind: ts.SyntaxKind.TypeLiteral,
+                    //                 _kind: ts.SyntaxKind[ts.SyntaxKind.TypeLiteral],
+                    //                 name: node.name,
+                    //                 optional: false,
+                    //                 types: Set([]),
+                    //                 members: getMembers(node.body)
+                    //             }
+                    //         }
+                    //     }
+                    //     case ts.SyntaxKind.ArrayLiteralExpression: {
+                    //         if (node.body.length) {
+                    //             const memberTypes = getArrayElementsType(node);
+                    //             return {
+                    //                 kind: ts.SyntaxKind.ArrayType,
+                    //                 _kind: ts.SyntaxKind[ts.SyntaxKind.ArrayType],
+                    //                 name: node.name,
+                    //                 optional: false,
+                    //                 types: Set(fromJS([memberTypes])),
+                    //                 members: [],
+                    //             };
+                    //         } else {
+                    //             return {
+                    //                 kind: ts.SyntaxKind.ArrayType,
+                    //                 _kind: ts.SyntaxKind[ts.SyntaxKind.ArrayType],
+                    //                 name: node.name,
+                    //                 optional: false,
+                    //                 types: Set(fromJS([])),
+                    //                 members: [],
+                    //             };
+                    //         }
+                    //     }
+            }
         });
         return members
     }
@@ -264,7 +221,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                 case ts.SyntaxKind.NumericLiteral:
                     return ts.createNode(ts.SyntaxKind.NumberKeyword);
                 case ts.SyntaxKind.ObjectLiteralExpression:
-                    const item = ts.createTypeReferenceNode(getArrayInterfaceItemName(node.name));
+                    const item = ts.createTypeReferenceNode(getArrayInterfaceItemName(node.name), undefined);
                     return item;
                 default: return ts.createNode(ts.SyntaxKind.AnyKeyword);
             }
@@ -285,7 +242,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
     function upper(string) {
         return string[0].toUpperCase() + string.slice(1);
     }
-    function pascalCase(input) {
+    function pascalCase(input): string {
         return startCase(toLower(input)).replace(/ /g, '');
     }
     function getArrayInterfaceItemName(input): string {
