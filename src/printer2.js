@@ -56,12 +56,16 @@ const json = `
         },
         {
           "long_name" : "England",
-          "short_name" : "England",
           "types" : [ "administrative_area_level_1", "political" ]
         },
         {
           "long_name" : "United Kingdom",
-          "short_name" : "GB",
+          "short_name" : 2,
+          "types" : [ "country", "political" ]
+        },
+        {
+          "long_name" : "United Kingdom",
+          "short_name" : [1],
           "types" : [ "country", "political" ]
         }
       ],
@@ -102,100 +106,119 @@ const json = `
 
 `;
 
-const outgoing = transform(parse(json, defaults), defaults).reverse();
+const json2 = `
+{"simple": 1}
+`
+
+const outgoing = transform(parse(json2, defaults), defaults);
 // console.log(JSON.stringify(outgoing, null, 2));
 
-var res1 = ts.createSourceFile('module', content, ts.ModuleKind.None);
-
+var res1 = ts.createSourceFile('module', '', ts.ModuleKind.None);
+//
 const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
 });
-
-function namedProp(member) {
-    const qs = nq(member.name);
-
-    const output = qs.needsQuotes ? qs.quotedValue : member.name;
-
-    const prop = ts.createNode(ts.SyntaxKind.PropertySignature);
-    prop.name = ts.createIdentifier(output);
-
-    if (member.optional) {
-        prop.questionToken = ts.createNode(ts.SyntaxKind.QuestionToken);
-    }
-
-    return prop;
-}
-
-const stack = [];
-
-getStatements(outgoing);
-
-function getStatements(stackItems) {
-    return stackItems.forEach(node => {
-        switch(node.kind) {
-            case ts.SyntaxKind.InterfaceDeclaration: {
-                const item   = ts.createNode(node.kind);
-                item.name    = ts.createIdentifier(node.name);
-                item.members = getMembers(node.members);
-                stack.push(item);
-            }
-        }
-    });
-}
-
-function getMembers(members) {
-    return members.map(member => {
-        switch(member.kind) {
-            case ts.SyntaxKind.ArrayType: {
-                const item = namedProp(member);
-                if (member.types.length === 0) {
-                    item.type = ts.createArrayTypeNode(ts.SyntaxKind.AnyKeyword);
-                } else {
-                    item.type = ts.createArrayTypeNode(member.types[0]);
-                }
-                return item;
-            }
-            case ts.SyntaxKind.TypeLiteral: {
-                const item = namedProp(member);
-                item.type = ts.createTypeLiteralNode(getMembers(member.members));
-                return item;
-            }
-            case ts.SyntaxKind.TypeReference: {
-                const item = namedProp(member);
-                if (member.types.length === 1) {
-                    item.type = ts.createTypeReferenceNode(member.types[0]);
-                } else {
-                    // multiple types
-                }
-                return item;
-            }
-            case ts.SyntaxKind.StringKeyword:
-            case ts.SyntaxKind.NumberKeyword: {
-                const item = namedProp(member);
-                item.type = ts.createNode(member.kind);
-                return item;
-            }
-            case ts.SyntaxKind.BooleanKeyword: {
-                const item = namedProp(member);
-                item.type = ts.createNode(member.kind);
-                return item;
-            }
-            case ts.SyntaxKind.NullKeyword: {
-                const item = namedProp(member);
-                item.type = ts.createNode(member.kind);
-                return item;
-            }
-            default: return member;
-        }
-    });
-}
-
-
-// console.log(JSON.stringify(res1.statements[1], null, 2));
+// console.log(outgoing);
+console.log(printer.printNode(ts.EmitHint.Unspecified, outgoing[0], res1))
 //
-stack.forEach(s => {
-    console.log(printer.printNode(ts.EmitHint.Unspecified, s, res1))
-})
+// function namedProp(member) {
+//     const qs = nq(member.name);
+//
+//     const output = qs.needsQuotes ? qs.quotedValue : member.name;
+//
+//     const prop = ts.createNode(ts.SyntaxKind.PropertySignature);
+//     prop.name = ts.createIdentifier(output);
+//
+//     if (member.optional) {
+//         prop.questionToken = ts.createNode(ts.SyntaxKind.QuestionToken);
+//     }
+//
+//     return prop;
+// }
+//
+// const stack = [];
+//
+// // console.log(printer.printNode(ts.EmitHint.Unspecified, int, res1));
+//
+// getStatements(outgoing);
+//
+// function getStatements(stackItems) {
+//     return stackItems.forEach(node => {
+//         switch(node.kind) {
+//             case ts.SyntaxKind.InterfaceDeclaration: {
+//                 const item   = ts.createNode(node.kind);
+//                 item.name    = ts.createIdentifier(node.name);
+//                 item.members = getMembers(node.members);
+//                 stack.push(item);
+//             }
+//         }
+//     });
+// }
+//
+// function getMembers(members) {
+//     return members.map(member => {
+//         switch(member.kind) {
+//             case ts.SyntaxKind.UnionType: {
+//                 const prop = namedProp(member);
+//
+//                 const memberNodes = member.types.map(x => {
+//                     return x.type;
+//                 });
+//
+//                 prop.type = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, memberNodes);
+//
+//                 return prop;
+//             }
+//             case ts.SyntaxKind.ArrayType: {
+//                 const item = namedProp(member);
+//                 if (member.types.length === 0) {
+//                     item.type = ts.createArrayTypeNode(ts.SyntaxKind.AnyKeyword);
+//                 } else {
+//                     item.type = ts.createArrayTypeNode(member.types[0]);
+//                 }
+//                 return item;
+//             }
+//             case ts.SyntaxKind.TypeLiteral: {
+//                 const item = namedProp(member);
+//                 item.type = ts.createTypeLiteralNode(getMembers(member.members));
+//                 return item;
+//             }
+//             case ts.SyntaxKind.TypeReference: {
+//                 const item = namedProp(member);
+//                 if (member.types.length === 1) {
+//                     item.type = ts.createTypeReferenceNode(member.types[0]);
+//                 } else {
+//                     // multiple types
+//                 }
+//                 return item;
+//             }
+//             case ts.SyntaxKind.StringKeyword:
+//             case ts.SyntaxKind.NumberKeyword: {
+//                 const item = namedProp(member);
+//                 item.type = ts.createNode(member.kind);
+//                 return item;
+//             }
+//             case ts.SyntaxKind.BooleanKeyword: {
+//                 const item = namedProp(member);
+//                 item.type = ts.createNode(member.kind);
+//                 return item;
+//             }
+//             case ts.SyntaxKind.NullKeyword: {
+//                 const item = namedProp(member);
+//                 item.type = ts.createNode(member.kind);
+//                 return item;
+//             }
+//             default: return member;
+//         }
+//     });
+// }
+//
+//
+// // console.log(JSON.stringify(res1.statements[1], null, 2));
+// // console.log(stack);
+// stack.forEach(s => {
+//     console.log(printer.printNode(ts.EmitHint.Unspecified, s, res1))
+// })
 //
 // console.log();
 // console.log(printer.printNode(ts.EmitHint.Unspecified, stack[1], res1));

@@ -36,9 +36,23 @@ export interface ImmutableNode extends Map<string, any> {
     get(path: 'members'): List<ImmutableMemberNode>
 }
 
+function namedProp(member) {
+    const qs = needsQuotes(member.name);
+
+    const output = qs.needsQuotes ? qs.quotedValue : member.name;
+
+    const prop = ts.createNode(ts.SyntaxKind.PropertySignature);
+    prop.name = ts.createIdentifier(output);
+
+    if (member.optional) {
+        prop.questionToken = ts.createNode(ts.SyntaxKind.QuestionToken);
+    }
+
+    return prop;
+}
+
 export function transform(stack: ParsedNode[], options: JsonTsOptions): InterfaceNode[] {
 
-    const memberStack = [];
     const wrapper = [{
         kind: ts.SyntaxKind.ObjectLiteralExpression,
         _kind: 'ObjectLiteralExpression',
@@ -47,88 +61,63 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         body: stack
     }];
 
-    const interfaces = getInterfaces(wrapper);
-    const merged = mergeDuplicateInterfaces(interfaces.toList());
+    const out = getInterfaces(wrapper);
+    // const merged = mergeDuplicateInterfaces(interfaces.toList());
 
-    return merged.toJS().reverse();
+    // return merged.toJS().reverse();
+    return out.toJS();
 
     function mergeDuplicateInterfaces(interfaces: List<ImmutableNode>): List<ImmutableNode> {
-        const merged = interfaces.reduce((acc, current) => {
+        return interfaces.reduce((acc, current) => {
 
-            const index = acc.findIndex(prev => prev.get('name') === current.get('name'));
+            const currentName = current.get('name');
+            const currentMemberNames = current.get('members').map(x => x.get('name')).toSet();
+            const matching = acc.findIndex(x => x.get('name') === currentName);
 
-            // We have a matching interface NAME
-            if (index > -1) {
+            // console.log(current.get('members').map(x => x.delete('optional')).toJS());
+            // console.log(current.get('members'));
 
-                // here, the current interface matches a PREV one
-                return acc.updateIn([index, 'members'], function(prevMembers) {
+            if (matching > -1) {
+                return acc.updateIn([matching, 'members'], function (members) {
+                    return members
+                        .map(x => {
+                            if (currentMemberNames.has(x.get('name'))) {
+                                const matching = current.get('members').find(curr => curr.get('name') === x.get('name'))
+                                if (matching.get('kind') !== x.get('kind')) {
 
-                    // console.log('members in current, not in prev');
-                    const memberNames = prevMembers.map(x => x.get('name')).toSet();
-                    const currenMemberNames = current.get('members').map(x => x.get('name')).toSet();
-                    const newMembersFromCurrent = current
-                        .get('members')
-                        .filter(member => !memberNames.has(member.get('name')))
-                        .map(member => {
-                            return member.set('optional', true);
-                        });
-
-                    // any items that exist
-
-                    return prevMembers
-                        .map(prev => {
-                            const matchingFromIncoming = current.get('members').find(x => x.get('name') === prev.get('name'));
-                            // Does the current type not match the existing?
-                            if (matchingFromIncoming && !matchingFromIncoming.get('types').contains(prev.get('type'))) {
-                                return prev.update('types', function (types) {
-                                    if (types.contains('Array<any>')) {
-                                        return matchingFromIncoming.get('types');
-                                    } else if (matchingFromIncoming.get('types').contains('Array<any>')) {
-                                        return types.concat(matchingFromIncoming.get('types').filter(x => x !== 'Array<any>'))
-                                    }
-                                    return types.concat(matchingFromIncoming.get('types'));
-                                });
+                                    return x.set('kind', ts.SyntaxKind.UnionType)
+                                        .set('_kind', ts.SyntaxKind[ts.SyntaxKind.UnionType])
+                                        .update('types', types => types.concat(matching.get('types')))
+                                }
+                                return x;
+                            } else {
+                                return x.set('optional', true);
                             }
-                            return prev;
                         })
-                        // Look at prev member, if it doesn't exist in this current object, it's
-                        // optional
-                        .map(prev => {
-                            if (!currenMemberNames.has(prev.get('name'))) {
-                                return prev.set('optional', true);
-                            }
-                            return prev;
-                        })
-                        .concat(newMembersFromCurrent);
+                        // .mergeDeep(current.get('members'))
                 })
             }
 
             return acc.push(current);
-
-        }, List([]));
-
-        return merged;
-    }
-
-    function getMatches(members: MemberNode[]) {
-        return memberStack.filter(m => {
-            return Immutable.is(m.get('members'), fromJS(members))
-        });
+        }, List([]) as any);
     }
 
     function createOne(node: ParsedNode): InterfaceNode {
 
         const thisMembers = getMembers(node.body);
+        const item   = ts.createNode(ts.SyntaxKind.InterfaceDeclaration);
+        item.name    = ts.createIdentifier(newInterfaceName(node));
+        item.members = ts.createNodeArray(thisMembers, false);
 
-        const mem = {
-            kind: ts.SyntaxKind.InterfaceDeclaration,
-            _kind: ts.SyntaxKind[ts.SyntaxKind.InterfaceDeclaration],
-            name: newInterfaceName(node),
-            original: node.name,
-            members: thisMembers
-        };
+        // const mem = {
+        //     kind: ts.SyntaxKind.InterfaceDeclaration,
+        //     _kind: ts.SyntaxKind[ts.SyntaxKind.InterfaceDeclaration],
+        //     name: newInterfaceName(node),
+        //     original: node.name,
+        //     members: thisMembers
+        // };
 
-        return mem;
+        return item;
     }
 
     function getInterfaces(nodes: ParsedNode[]): OrderedSet<ImmutableNode> {
@@ -136,22 +125,12 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
 
             if (node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
 
-                // gather any interfaces for this node's children
-                // const children = getInterfaces(node.body);
-
                 const newInterface = createOne(node);
-                const matches = getMatches(newInterface.members);
                 const asMap = fromJS(newInterface);
 
                 if (node.interfaceCandidate) {
-                    if (matches.length === 0) {
-                        memberStack.push(asMap);
-                        const newAsList = List([asMap]);
-                        return acc.concat(newAsList, getInterfaces(node.body));
-                    } else {
-                        const newAsList = List([asMap]);
-                        return acc.concat(newAsList, getInterfaces(node.body));
-                    }
+                    const newAsList = List([asMap]);
+                    return acc.concat(newAsList, getInterfaces(node.body));
                 }
 
                 return acc.concat(getInterfaces(node.body));
@@ -178,97 +157,93 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
     function getMembers(stack: ParsedNode[]): MemberNode[] {
         const members = stack.map(node => {
             switch(node.kind) {
-                case ts.SyntaxKind.NullKeyword:
-                    return {
-                        name: node.name,
-                        optional: false,
-                        kind: ts.SyntaxKind.NullKeyword,
-                        _kind: ts.SyntaxKind[ts.SyntaxKind.NullKeyword],
-                        types: Set(['null']),
-                        members: []
-                    };
-                case ts.SyntaxKind.FalseKeyword:
-                case ts.SyntaxKind.TrueKeyword: {
-                    return {
-                        name: node.name,
-                        optional: false,
-                        kind: ts.SyntaxKind.BooleanKeyword,
-                        _kind: ts.SyntaxKind[ts.SyntaxKind.BooleanKeyword],
-                        types: Set(['boolean']),
-                        members: []
-                    }
-                }
+            //     case ts.SyntaxKind.NullKeyword: {
+            //         const item = namedProp({name: node.name});
+            //         item.type = ts.createNode(ts.SyntaxKind.NullKeyword);
+            //         return {
+            //             name: node.name,
+            //             optional: false,
+            //             kind: ts.SyntaxKind.NullKeyword,
+            //             _kind: ts.SyntaxKind[ts.SyntaxKind.NullKeyword],
+            //             types: Set([fromJS(item)]),
+            //             members: []
+            //         };
+            //     }
+            //     case ts.SyntaxKind.FalseKeyword:
+            //     case ts.SyntaxKind.TrueKeyword: {
+            //         const item = namedProp({name: node.name});
+            //         item.type = ts.createNode(ts.SyntaxKind.BooleanKeyword);
+            //         return {
+            //             name: node.name,
+            //             optional: false,
+            //             kind: ts.SyntaxKind.BooleanKeyword,
+            //             _kind: ts.SyntaxKind[ts.SyntaxKind.BooleanKeyword],
+            //             types: Set([fromJS(item)]),
+            //             members: []
+            //         }
+            //     }
                 case ts.SyntaxKind.StringLiteral: {
-                    return {name: node.name,
-                        optional: false,
-                        types: Set(['string']),
-                        kind: ts.SyntaxKind.StringKeyword,
-                        _kind: ts.SyntaxKind[ts.SyntaxKind.StringKeyword],
-                        members: []
-                    }
+                    const item = namedProp({name: node.name});
+                    item.type = ts.createNode(ts.SyntaxKind.StringKeyword);
+                    return item;
                 }
                 case ts.SyntaxKind.NumericLiteral: {
-                    return {
-                        name: node.name,
-                        optional: false,
-                        types: Set(['number']),
-                        kind: ts.SyntaxKind.NumberKeyword,
-                        _kind: ts.SyntaxKind[ts.SyntaxKind.NumberKeyword],
-                        members: []
-                    }
+                    const item = namedProp({name: node.name});
+                    item.type = ts.createNode(ts.SyntaxKind.NumberKeyword);
+                    return item;
                 }
-                case ts.SyntaxKind.ObjectLiteralExpression: {
-
-                    if (node.interfaceCandidate) {
-                        const newInterface = createOne(node);
-                        const matches = getMatches(newInterface.members);
-
-                        const interfaceName = matches.length
-                            ? matches[0].get('name')
-                            : newInterface.name;
-
-                        return {
-                            kind: ts.SyntaxKind.TypeReference,
-                            _kind: ts.SyntaxKind[ts.SyntaxKind.TypeReference],
-                            name: node.name,
-                            optional: false,
-                            types: Set([interfaceName]),
-                            members: []
-                        }
-                    } else {
-                        return {
-                            kind: ts.SyntaxKind.TypeLiteral,
-                            _kind: ts.SyntaxKind[ts.SyntaxKind.TypeLiteral],
-                            name: node.name,
-                            optional: false,
-                            types: Set(['__ObjectLiteralExpression']),
-                            members: getMembers(node.body)
-                        }
-                    }
-                }
-                case ts.SyntaxKind.ArrayLiteralExpression: {
-                    if (node.body.length) {
-                        const memberTypes = getArrayElementsType(node);
-                        return {
-                            kind: ts.SyntaxKind.ArrayType,
-                            _kind: ts.SyntaxKind[ts.SyntaxKind.ArrayType],
-                            name: node.name,
-                            optional: false,
-                            types: Set(fromJS([memberTypes])),
-                            members: [],
-                        };
-                    } else {
-                        return {
-                            kind: ts.SyntaxKind.ArrayType,
-                            _kind: ts.SyntaxKind[ts.SyntaxKind.ArrayType],
-                            name: node.name,
-                            optional: false,
-                            types: Set(fromJS([])),
-                            members: [],
-                        };
-                    }
-                }
-            }
+            //     case ts.SyntaxKind.ObjectLiteralExpression: {
+            //
+            //         if (node.interfaceCandidate) {
+            //             const newInterface = createOne(node);
+            //             // const matches = getMatches(newInterface.members);
+            //             //
+            //             // const interfaceName = matches.length
+            //             //     ? matches[0].get('name')
+            //             //     : newInterface.name;
+            //
+            //             return {
+            //                 kind: ts.SyntaxKind.TypeReference,
+            //                 _kind: ts.SyntaxKind[ts.SyntaxKind.TypeReference],
+            //                 name: node.name,
+            //                 optional: false,
+            //                 types: Set([newInterface.name]),
+            //                 members: []
+            //             }
+            //         } else {
+            //             return {
+            //                 kind: ts.SyntaxKind.TypeLiteral,
+            //                 _kind: ts.SyntaxKind[ts.SyntaxKind.TypeLiteral],
+            //                 name: node.name,
+            //                 optional: false,
+            //                 types: Set([]),
+            //                 members: getMembers(node.body)
+            //             }
+            //         }
+            //     }
+            //     case ts.SyntaxKind.ArrayLiteralExpression: {
+            //         if (node.body.length) {
+            //             const memberTypes = getArrayElementsType(node);
+            //             return {
+            //                 kind: ts.SyntaxKind.ArrayType,
+            //                 _kind: ts.SyntaxKind[ts.SyntaxKind.ArrayType],
+            //                 name: node.name,
+            //                 optional: false,
+            //                 types: Set(fromJS([memberTypes])),
+            //                 members: [],
+            //             };
+            //         } else {
+            //             return {
+            //                 kind: ts.SyntaxKind.ArrayType,
+            //                 _kind: ts.SyntaxKind[ts.SyntaxKind.ArrayType],
+            //                 name: node.name,
+            //                 optional: false,
+            //                 types: Set(fromJS([])),
+            //                 members: [],
+            //             };
+            //         }
+            //     }
+            return node;
         });
         return members
     }
