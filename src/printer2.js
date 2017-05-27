@@ -144,21 +144,52 @@ const json3 = `
 }
 `
 
-const outgoing = transform(parse(json3, defaults), defaults);
+// const outgoing = transform(parse(json3, defaults), defaults);
 // console.log(JSON.stringify(outgoing, null, 2));
 
 // var res1 = ts.createSourceFile('module', '', ts.ModuleKind.None);
-var res1 = ts.createSourceFile('module', json3, ts.ModuleKind.None);
+var res1 = ts.createSourceFile('module', content, ts.ModuleKind.None);
+console.log(res1.statements[3].statement);
+
+const labeledStatement = ts.createNode(ts.SyntaxKind.LabeledStatement);
+labeledStatement.label = ts.createIdentifier('kitti');
+labeledStatement.statement = ts.createStatement(ts.createIdentifier('Array'));
+console.log(labeledStatement.statement);
+
 // console.log('%%%%^^^^');
 // console.log(res1.statements[3]);
+
+// const unionType = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, [
+//     ts.createNode(ts.SyntaxKind.StringKeyword),
+//     ts.createNode(ts.SyntaxKind.NumberKeyword)
+// ]);
 //
+// const typeArguments = [unionType];
+// const expression = ts.createIdentifier('Array');
+// const expressionWithTypes = ts.createExpressionWithTypeArguments(typeArguments, expression);
+//
+// const expressionStatementNode = ts.createNode(ts.SyntaxKind.ExpressionStatement);
+// expressionStatementNode.expression = expressionWithTypes;
+// const statement = ts.createStatement(expressionWithTypes);
+// const final = ts.createNode(ts.SyntaxKind.PropertySignature);
+// final.name = ts.createIdentifier('kittens');
+// final.statement = statement;
+
+// const item   = ts.createNode(ts.SyntaxKind.InterfaceDeclaration);
+// item.name    = ts.createIdentifier('MyInterface');
+// item.members = ts.createNodeArray([label], false);
+
+
 const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
 });
+
+// console.log(printer.printNode(ts.EmitHint.Unspecified, expressionStatementNode, res1));
+
 // console.log(outgoing);
-outgoing.forEach(item => {
-    console.log(printer.printNode(ts.EmitHint.Unspecified, item, res1));
-})
+// outgoing.forEach(item => {
+//     console.log(printer.printNode(ts.EmitHint.Unspecified, item, res1));
+// })
 //
 // function namedProp(member) {
 //     const qs = nq(member.name);
