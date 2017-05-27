@@ -108,7 +108,33 @@ const json = `
 
 const json2 = `
 {
-    "simple": "1"
+    shane: {
+        "user": {
+          "name": "shane",
+          "pets": "1"
+        }
+    },
+    kittie: {
+        "user": {
+          "name": "shane",
+          "age": 10,
+          "pets": 1
+        }
+    },
+    simon: {
+        "user": {
+          "name": "shane",
+          "age": 10,
+          "pets": false
+        }
+    },
+    yvonne: {
+        "user": {
+          "name": "shane",
+          "age": 10,
+          "pets": null
+        }
+    }
 }
 `
 
@@ -121,7 +147,9 @@ const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
 });
 // console.log(outgoing);
-console.log(printer.printNode(ts.EmitHint.Unspecified, outgoing[0], res1))
+outgoing.forEach(item => {
+    console.log(printer.printNode(ts.EmitHint.Unspecified, item, res1));
+})
 //
 // function namedProp(member) {
 //     const qs = nq(member.name);

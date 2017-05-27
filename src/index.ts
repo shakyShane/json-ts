@@ -5,7 +5,7 @@ import {transform} from "./transformer";
 export interface JsonTsOptions {
     namespace?: string
     flow?: boolean
-    prefix?: string,
+    prefix?: string
     rootName?: string
 }
 
