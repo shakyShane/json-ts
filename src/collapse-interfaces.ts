@@ -2,16 +2,34 @@ import * as ts from 'typescript';
 import {List, Set} from 'immutable';
 import {ImmutableNode, log, namedProp} from "./transformer";
 
+interface What {
+    items: Array<number|string>
+}
+
+const label = ''
+// const node = namedProp({name: 'shane'});
+// const node = ts.createLabel('shane');
+// const unionType = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, [
+//     ts.createNode(ts.SyntaxKind.StringKeyword),
+//     ts.createNode(ts.SyntaxKind.NumberKeyword)
+// ]);
+// const typeArguments = [unionType];
+// const expression = ts.createIdentifier('Array');
+// const expressionWithTypes = ts.createExpressionWithTypeArguments(typeArguments, expression);
+// node.type = expressionWithTypes;
+//
+// console.log(expressionWithTypes);
+// console.log('---');
+// console.log(node);
+
 export function collapseInterfaces(interfaces: List<ImmutableNode>): List<ImmutableNode> {
     return interfaces.reduce((acc, current) => {
 
+        // console.log(current.members[0].statement.expression);
         const currentName = current.name.text;
-        const currentMemberNames = Set(current.members.map(x => x.name.text));
+        const currentMemberNames = Set(current.members.map(x => (x.name || x.label).text));
         
-        const matchingInterfaceIndex = acc.findIndex(x => x.name.text === currentName);
-
-        // console.log(current.get('members').map(x => x.delete('optional')).toJS());
-        // console.log(current.get('members'));
+        const matchingInterfaceIndex = acc.findIndex(x => (x.name || x.label).text === currentName);
 
         if (matchingInterfaceIndex > -1) {
             return acc
@@ -25,7 +43,6 @@ export function collapseInterfaces(interfaces: List<ImmutableNode>): List<Immuta
 
                             // loop over incoming and add missing ones
                             current.members.forEach(mem => {
-                                console.log(ts.SyntaxKind[mem.type.kind]);
                                 const existingIndex = int.members.findIndex(x => x.name.text === mem.name.text);
                                 const existingMember = int.members[existingIndex];
                                 if (!existingMember) {

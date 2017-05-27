@@ -19,7 +19,7 @@ interface IBody {
                                ArrayType = 164
                                  elementType: NumberKeyword = 133 
                        
-  code: {name: string};  // PropertySignature = 148,
+  //code: {name: string};  // PropertySignature = 148,
                          // type: TypeLiteral = 163
                          // members: []
                          
@@ -31,6 +31,7 @@ interface IBody {
                       // type: ArrayType = 164
                       // elementType: TypeReference = 159
                       //    typeName: text: 'IOther'
+  pets: Array<number|string>
 }
 `;
 
@@ -137,11 +138,19 @@ const json2 = `
     }
 }
 `
+const json3 = `
+{
+    shane: [9, "1"]
+}
+`
 
-const outgoing = transform(parse(json2, defaults), defaults);
+const outgoing = transform(parse(json3, defaults), defaults);
 // console.log(JSON.stringify(outgoing, null, 2));
 
-var res1 = ts.createSourceFile('module', '', ts.ModuleKind.None);
+// var res1 = ts.createSourceFile('module', '', ts.ModuleKind.None);
+var res1 = ts.createSourceFile('module', json3, ts.ModuleKind.None);
+// console.log('%%%%^^^^');
+// console.log(res1.statements[3]);
 //
 const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
