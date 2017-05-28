@@ -117,11 +117,11 @@ For more examples, see the [Tests](https://github.com/shakyShane/json-ts/tree/ma
 - [x] de-dupe interfaces (it's dumb atm, POC)
 - [x] de-dupe interfaces where propname differs, but members are the same
 - [x] merge interfaces by creating union types for members
-- [ ] union types for array that contain mixed literal types: `nums: [1, "2"] -> nums: number|string[]`
+- [x] union types for array that contain mixed literal types: `nums: [1, "2"] -> nums: number|string[]`
       (already works for complex objects)
 - [x] quoted member names when needed
-- [ ] handle invalid name for interface
-- [ ] Use Typescript factory methods/printer for output 
+- [x] handle invalid name for interface
+- [x] Use Typescript factory methods/printer for output 
 - [x] Allow wrapping in namespace: eg: 
     ```ts
         declare namespace Projects {
