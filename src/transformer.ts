@@ -1,14 +1,12 @@
 import * as ts from 'typescript';
 import {ParsedNode} from "./parser";
-import * as Immutable from 'immutable';
-import {OrderedSet, List, Set} from "immutable";
+import {Set} from "immutable";
 import needsQuotes = require('needsquotes');
 import {JsonTsOptions} from "./index";
 import {collapseInterfaces} from "./collapse-interfaces";
 import {Node} from "typescript";
 
 const {startCase, toLower} = require('../_');
-const { Map, is, fromJS} = Immutable;
 
 export const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
@@ -19,23 +17,10 @@ export interface MemberNode {
     optional: boolean
 }
 
-export interface ImmutableMemberNode extends Map<string, any> {
-    get(path: 'types'): Set<string>
-    get(path: 'members'): List<ImmutableMemberNode>
-    get(path: 'name'): string
-    get(path: 'optional'): boolean
-}
-
 export interface InterfaceNode {
     name: string;
     original: string;
     members: MemberNode[];
-}
-
-export interface ImmutableNode extends Map<string, any> {
-    get(path: 'name'): string
-    get(path: 'original'): string
-    get(path: 'members'): List<ImmutableMemberNode>
 }
 
 const kindMap = {
@@ -82,14 +67,8 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         body: stack
     }];
 
-    const out = getInterfaces(wrapper);
-    // console.log(out);
-    // log(interfaceStack);
-    // const merged = mergeDuplicateInterfaces(interfaces.toList());
-
-    // return merged.toJS().reverse();
-    // const cleaned = out.toList().map(x => x.delete('pos').delete('end').delete('flags'));
-    return collapseInterfaces(out);
+    const interfaces = getInterfaces(wrapper);
+    return collapseInterfaces(interfaces);
 
     function createOne(node: ParsedNode): InterfaceNode {
 

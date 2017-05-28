@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
-import {List, Set} from 'immutable';
-import {ImmutableNode, log, namedProp} from "./transformer";
+import {Set} from 'immutable';
+import {namedProp} from "./transformer";
 
 function membersMatch(first, second) {
     if (first.kind !== second.kind) {
@@ -29,7 +29,7 @@ function isEmptyArrayType(member) {
     return false;
 }
 
-export function collapseInterfaces(interfaces: List<any>): any[] {
+export function collapseInterfaces(interfaces: any[]): any[] {
     return interfaces.reduce((acc, current) => {
 
         const currentName = current.name.text;
