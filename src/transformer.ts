@@ -5,6 +5,7 @@ import {OrderedSet, List, Set} from "immutable";
 import needsQuotes = require('needsquotes');
 import {JsonTsOptions} from "./index";
 import {collapseInterfaces} from "./collapse-interfaces";
+import {Node} from "typescript";
 
 const {startCase, toLower} = require('../_');
 const { Map, is, fromJS} = Immutable;
@@ -88,7 +89,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
 
     // return merged.toJS().reverse();
     // const cleaned = out.toList().map(x => x.delete('pos').delete('end').delete('flags'));
-    return collapseInterfaces(out).toJS();
+    return collapseInterfaces(out);
 
     function createOne(node: ParsedNode): InterfaceNode {
 
@@ -100,7 +101,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         return item;
     }
 
-    function getInterfaces(nodes: ParsedNode[]): OrderedSet<ImmutableNode> {
+    function getInterfaces(nodes: ParsedNode[]): Node[] {
         return nodes.reduce((acc, node) => {
 
             if (node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
@@ -109,8 +110,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                 // const asMap = fromJS(newInterface);
 
                 if (node.interfaceCandidate) {
-                    const newAsList = Immutable.fromJS([newInterface]);
-                    return acc.concat(newAsList, getInterfaces(node.body));
+                    return acc.concat([newInterface], getInterfaces(node.body));
                 }
 
                 // return acc.concat(getInterfaces(node.body));
@@ -130,7 +130,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
 
             return acc;
 
-        }, List([]) as any);
+        }, []);
     }
 
     function getMembers(stack: ParsedNode[]) {
@@ -243,7 +243,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
             }).toJS();
 
             const item = ts.createNode(ts.SyntaxKind.ParenthesizedType);
-            item.type = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, types);
+            (item as any).type = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, types);
 
             return item;
         } else {

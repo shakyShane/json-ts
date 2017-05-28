@@ -1,203 +1,46 @@
+require('source-map-support').install();
 var {json2ts, parse, transform, defaults} = require("../");
 var ts = require("typescript");
 var nq = require('needsquotes');
-var content = `
-interface IBody {
-  pets: (number|string)[]
-}
-`;
+var catjson = require('fs').readFileSync('../__tests__/magento/categories.json', 'utf8');
+var product = require('fs').readFileSync('../__tests__/magento/product.json', 'utf8');
+var petition = require('fs').readFileSync('../__tests__/petition/input.json', 'utf8');
+var chrome = require('fs').readFileSync('../__tests__/chrome/chrome.json', 'utf8');
 
-const json = `
+const arrayElements = `
 {
-  "results" : [
-    {
-      "address_components" : [
-        {
-          "long_name" : "London",
-          "short_name" : "London",
-          "types" : [ "locality", "political" ]
-        },
-        {
-          "long_name" : "London",
-          "short_name" : "London",
-          "types" : [ "postal_town" ]
-        },
-        {
-          "long_name" : "Greater London",
-          "short_name" : "Greater London",
-          "types" : [ "administrative_area_level_2", "political" ]
-        },
-        {
-          "long_name" : "England",
-          "types" : [ "administrative_area_level_1", "political" ]
-        },
-        {
-          "long_name" : "United Kingdom",
-          "short_name" : 2,
-          "types" : [ "country", "political" ]
-        },
-        {
-          "long_name" : "United Kingdom",
-          "short_name" : [1],
-          "types" : [ "country", "political" ]
-        }
-      ],
-      "formatted_address" : "London, UK",
-      "geometry" : {
-        "bounds" : {
-          "northeast" : {
-            "lat" : 51.6723432,
-            "lng" : 0.148271
-          },
-          "southwest" : {
-            "lat" : 51.38494009999999,
-            "lng" : -0.3514683
-          }
-        },
-        "location" : {
-          "lat" : 51.5073509,
-          "lng" : -0.1277583
-        },
-        "location_type" : "APPROXIMATE",
-        "viewport" : {
-          "northeast" : {
-            "lat" : 51.6723432,
-            "lng" : 0.1482319
-          },
-          "southwest" : {
-            "lat" : 51.38494009999999,
-            "lng" : -0.3514683
-          }
-        }
-      },
-      "place_id" : "ChIJdd4hrwug2EcRmSrV3Vo6llI",
-      "types" : [ "locality", "political" ]
-    }
-  ],
-  "status" : "OK"
+    single: [-1],
+    dupes: [1, 2, 3],
+    mixed: [1, "2", false],
+    empty: [],
 }
-
 `;
 
-const json2 = `
+const missingProps = `
 {
     shane: {
-        "user": {
-          "name": "shane",
-          "pets": "1"
-        }
+        profile: {name: "shane"}
     },
-    kittie: {
-        "user": {
-          "name": "shane",
-          "age": 10,
-          "pets": 1
-        }
-    },
-    simon: {
-        "user": {
-          "name": "shane",
-          "age": 10,
-          "pets": false
-        }
-    },
-    yvonne: {
-        "user": {
-          "name": "shane",
-          "age": 10,
-          "pets": null
-        }
+    sally: {
+        profile: {name: "sally", age: 10}
     }
-}
-`
-const json3 = `
-{
-    shane: [1, 2, 10.0, -1, "1"]
 }
 `;
 
-const outgoing = transform(parse(json3, defaults), defaults);
+const outgoing = transform(parse(chrome, defaults), defaults);
 // console.log(JSON.stringify(outgoing, null, 2));
 
-var res1 = ts.createSourceFile('module', content, ts.ModuleKind.None);
-
-// console.log(res1.statements[0].members[0].type.elementType.type);
-
-// console.log(prop.type.expression);
-
-// prop
-
-// console.log(props.);
-
-// console.log(labeledStatement.statement);
-
-// labeledStatement.statement = ts.createStatement(ts.createIdentifier('Array'));
-// console.log('%%%%^^^^');
-// console.log(res1.statements[3]);
-
-//
-// const typeArguments = [unionType];
-// const expression = ts.createIdentifier('Array');
-// const expressionWithTypes = ts.createExpressionWithTypeArguments(typeArguments, expression);
-//
-// const expressionStatementNode = ts.createNode(ts.SyntaxKind.ExpressionStatement);
-// expressionStatementNode.expression = expressionWithTypes;
-// const statement = ts.createStatement(expressionWithTypes);
-// const final = ts.createNode(ts.SyntaxKind.PropertySignature);
-// final.name = ts.createIdentifier('kittens');
-// final.statement = statement;
-
-// const item   = ts.createNode(ts.SyntaxKind.InterfaceDeclaration);
-// item.name    = ts.createIdentifier('MyInterface');
-// item.members = ts.createNodeArray([label], false);
-
+var res1 = ts.createSourceFile('module', chrome, ts.ModuleKind.None);
 
 const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
 });
 
+outgoing.forEach(x => {
+    console.log(printer.printNode(ts.EmitHint.Unspecified, x, res1));
+})
 // console.log(res1.statements[0].members[0].type);
-console.log(printer.printNode(ts.EmitHint.Unspecified, outgoing[0], res1));
 
-// console.log(outgoing);
-// outgoing.forEach(item => {
-//     console.log(printer.printNode(ts.EmitHint.Unspecified, item, res1));
-// })
-//
-// function namedProp(member) {
-//     const qs = nq(member.name);
-//
-//     const output = qs.needsQuotes ? qs.quotedValue : member.name;
-//
-//     const prop = ts.createNode(ts.SyntaxKind.PropertySignature);
-//     prop.name = ts.createIdentifier(output);
-//
-//     if (member.optional) {
-//         prop.questionToken = ts.createNode(ts.SyntaxKind.QuestionToken);
-//     }
-//
-//     return prop;
-// }
-//
-// const stack = [];
-//
-// // console.log(printer.printNode(ts.EmitHint.Unspecified, int, res1));
-//
-// getStatements(outgoing);
-//
-// function getStatements(stackItems) {
-//     return stackItems.forEach(node => {
-//         switch(node.kind) {
-//             case ts.SyntaxKind.InterfaceDeclaration: {
-//                 const item   = ts.createNode(node.kind);
-//                 item.name    = ts.createIdentifier(node.name);
-//                 item.members = getMembers(node.members);
-//                 stack.push(item);
-//             }
-//         }
-//     });
-// }
-//
 // function getMembers(members) {
 //     return members.map(member => {
 //         switch(member.kind) {
