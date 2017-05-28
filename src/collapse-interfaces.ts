@@ -41,6 +41,19 @@ export function collapseInterfaces(interfaces: List<any>): any[] {
             return acc
                 .map((int, index) => {
                     if (index === matchingInterfaceIndex) {
+
+                        const prevMemberNames = Set(int.members.map(x => (x.name || x.label).text));
+
+                        // if the current interface has less props than a previous one
+                        // we need to back-track and make the previous one optional
+                        if (currentMemberNames.size < prevMemberNames.size) {
+                            // elements that existed before, but not in the current
+                            const missing = int.members.filter(x => !currentMemberNames.has(x.name.text));
+                            missing.forEach(mem => {
+                                mem.questionToken = ts.createNode(ts.SyntaxKind.QuestionToken);
+                            });
+                        }
+
                         if (currentMemberNames.has(int.name.text)) {
                             console.log('exists in both, maybe union', int.name.text);
                         } else {
@@ -50,6 +63,7 @@ export function collapseInterfaces(interfaces: List<any>): any[] {
 
                             // Loop over incoming current members
                             current.members.forEach(mem => {
+
                                 const existingIndex = int.members.findIndex(x => x.name.text === mem.name.text);
                                 const existingMember = int.members[existingIndex];
 

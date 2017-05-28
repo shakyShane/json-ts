@@ -19,18 +19,18 @@ const arrayElements = `
 const missingProps = `
 {
     shane: {
-        profile: {name: "shane"}
+        profile: {name: "shane", "age": 100}
     },
     sally: {
-        profile: {name: "sally", age: 10}
+        profile: {name: "sally"}
     }
 }
 `;
 
-const outgoing = transform(parse(chrome, defaults), defaults);
+const outgoing = transform(parse(missingProps, defaults), defaults);
 // console.log(JSON.stringify(outgoing, null, 2));
 
-var res1 = ts.createSourceFile('module', chrome, ts.ModuleKind.None);
+var res1 = ts.createSourceFile('module', missingProps, ts.ModuleKind.None);
 
 const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
