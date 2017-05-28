@@ -36,6 +36,10 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
                 push(literalTypeFromArrayElement(incoming, incoming.kind));
                 break;
             }
+            case ts.SyntaxKind.PrefixUnaryExpression: {
+                push(literalTypeFromArrayElement(incoming, ts.SyntaxKind.NumericLiteral));
+                break;
+            }
             case ts.SyntaxKind.ObjectLiteralExpression: {
                 const elem = {
                     kind: ts.SyntaxKind.ObjectLiteralExpression,

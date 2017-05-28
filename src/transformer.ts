@@ -37,6 +37,15 @@ export interface ImmutableNode extends Map<string, any> {
     get(path: 'members'): List<ImmutableMemberNode>
 }
 
+const kindMap = {
+    [ts.SyntaxKind.NullKeyword]: ts.SyntaxKind.NullKeyword,
+    [ts.SyntaxKind.StringLiteral]: ts.SyntaxKind.StringKeyword,
+    [ts.SyntaxKind.FirstLiteralToken]: ts.SyntaxKind.NumberKeyword,
+    [ts.SyntaxKind.TrueKeyword]: ts.SyntaxKind.BooleanKeyword,
+    [ts.SyntaxKind.FalseKeyword]: ts.SyntaxKind.BooleanKeyword,
+    [ts.SyntaxKind.NumericLiteral]: ts.SyntaxKind.NumberKeyword,
+};
+
 export function namedProp(member) {
     const qs = needsQuotes(member.name);
 
@@ -189,19 +198,8 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                 case ts.SyntaxKind.ArrayLiteralExpression: {
                     if (node.body.length) {
                         const item = namedProp({name: node.name});
-                        const outgoing = getArrayElementsType(node);
-                        if (outgoing.kind === ts.SyntaxKind.ExpressionWithTypeArguments) {
-                            const statement = ts.createStatement(outgoing);
-                            const expression = ts.createLabel(node.name, statement);
-                            // console.log(expression);
-                            // expression.statement = statement;
-                            // console.log('---');
-                            // console.log(expression.statement);
-                            // console.log('^^^');
-                            return expression;
-                        }
-                        // console.log(outgo
-                        item.type = ts.createArrayTypeNode(outgoing);
+                        const elements = getArrayElementsType(node);
+                        item.type = ts.createArrayTypeNode(elements);
                         return item;
                     } else {
                         const item = namedProp({name: node.name});
@@ -221,15 +219,11 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
             const kind = kinds.first();
             switch(kind) {
                 case ts.SyntaxKind.NullKeyword:
-                    return ts.createNode(ts.SyntaxKind.NullKeyword);
                 case ts.SyntaxKind.StringLiteral:
-                    return ts.createNode(ts.SyntaxKind.StringKeyword);
                 case ts.SyntaxKind.TrueKeyword:
-                case ts.SyntaxKind.FalseKeyword: {
-                    return ts.createNode(ts.SyntaxKind.BooleanKeyword);
-                }
+                case ts.SyntaxKind.FalseKeyword:
                 case ts.SyntaxKind.NumericLiteral:
-                    return ts.createNode(ts.SyntaxKind.NumberKeyword);
+                    return ts.createNode(kindMap[kind]);
                 case ts.SyntaxKind.ObjectLiteralExpression:
                     const item = ts.createTypeReferenceNode(getArrayInterfaceItemName(node.name), undefined);
                     return item;
@@ -242,17 +236,16 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         }
         // console.log(node.body);
         if (kinds.every(kind => safeUnions.has(kind))) {
-            const types = kinds.toList().map(x => {
-                return ts.createNode(x);
+
+            // console.log(node.body);
+            const types = kinds.map(x => {
+                return ts.createNode(kindMap[x]);
             }).toJS();
-            // const unionType = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, types);
-            // const node = ts.createLabel('shane');
-            const unionType = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, types);
-            const typeArguments = [unionType];
-            const expression = ts.createIdentifier('Array');
-            const expressionWithTypes = ts.createExpressionWithTypeArguments(typeArguments, expression);
-            return expressionWithTypes;
-            // return unionType;
+
+            const item = ts.createNode(ts.SyntaxKind.ParenthesizedType);
+            item.type = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, types);
+
+            return item;
         } else {
             console.log('Not creating union as this array contains mixed complexr types');
         }

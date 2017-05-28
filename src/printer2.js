@@ -3,35 +3,7 @@ var ts = require("typescript");
 var nq = require('needsquotes');
 var content = `
 interface IBody {
-  // code: string;  // PropertySignature = 148,
-  // code?: string; // PropertySignature = 148,
-                    //  questionToken: QuestionToken = 55
-                    //  type: StringKeyword = 136
-                    
-  // code: IOther;  // PropertySignature = 148,
-                    //   type: TypeReference = 159
-                    //     typeName: 'IOther'
-                    
-  // code: string|number[]; // PropertySignature = 148,
-                          // type: UnionType = 166  
-                          // types: [
-                               StringKeyword = 136,
-                               ArrayType = 164
-                                 elementType: NumberKeyword = 133 
-                       
-  //code: {name: string};  // PropertySignature = 148,
-                         // type: TypeLiteral = 163
-                         // members: []
-                         
-  // code: string[];  // PropertySignature = 148,
-                      // type: ArrayType = 164
-                      // elementType: {}
-                   
-  // code: IOther[];  // PropertySignature = 148,
-                      // type: ArrayType = 164
-                      // elementType: TypeReference = 159
-                      //    typeName: text: 'IOther'
-  pets: Array<number|string>
+  pets: (number|string)[]
 }
 `;
 
@@ -140,46 +112,16 @@ const json2 = `
 `
 const json3 = `
 {
-    shane: [9, "1"]
+    shane: [1, 2, 10.0, -1, "1"]
 }
 `;
 
-// const outgoing = transform(parse(json3, defaults), defaults);
+const outgoing = transform(parse(json3, defaults), defaults);
 // console.log(JSON.stringify(outgoing, null, 2));
 
-// var res1 = ts.createSourceFile('module', '', ts.ModuleKind.None);
 var res1 = ts.createSourceFile('module', content, ts.ModuleKind.None);
-// console.log(res1.statements[3].statement.expression.typeArguments[0]);
 
-const intr = ts.createNode(ts.SyntaxKind.InterfaceDeclaration);
-intr.name = ts.createIdentifier('MyInterFace');
-
-
-const prop = ts.createNode(ts.SyntaxKind.PropertySignature);
-prop.name = ts.createIdentifier('kittie');
-
-const labeledStatement = ts.createNode(ts.SyntaxKind.ExpressionStatement);
-
-const unionType = ts.createUnionOrIntersectionTypeNode(ts.SyntaxKind.UnionType, [
-    ts.createNode(ts.SyntaxKind.StringKeyword),
-    ts.createNode(ts.SyntaxKind.NumberKeyword),
-    ts.createNode(ts.SyntaxKind.BooleanKeyword),
-]);
-
-const nestedExpre = ts.createNode(ts.SyntaxKind.CallExpression);
-
-// const o = ts.createExpressionWithTypeArguments([unionType], ts.createIdentifier('Array'));
-nestedExpre.expression = ts.createIdentifier('Array');
-// nestedExpre.expression.flags = 0;
-nestedExpre.typeArguments = [unionType];
-nestedExpre.arguments = [];
-
-labeledStatement.expression = nestedExpre;
-// labeledStatement.expression.flags = 32768;
-
-prop.type = labeledStatement;
-
-intr.members = [prop];
+// console.log(res1.statements[0].members[0].type.elementType.type);
 
 // console.log(prop.type.expression);
 
@@ -214,7 +156,8 @@ const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
 });
 
-console.log(printer.printNode(ts.EmitHint.Unspecified, intr, res1));
+// console.log(res1.statements[0].members[0].type);
+console.log(printer.printNode(ts.EmitHint.Unspecified, outgoing[0], res1));
 
 // console.log(outgoing);
 // outgoing.forEach(item => {
