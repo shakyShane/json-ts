@@ -16,28 +16,30 @@ const arrayElements = `
 }
 `;
 
-const missingProps = `
+const invalidProps = `
 {
-    shane: {
-        profile: {name: "shane", "age": 100}
+    "GET /posts": {
+        code: 400,
+        headers: [{"contentType": "json", "myName":"kittie"}]
     },
-    sally: {
-        profile: {name: "sally"}
+    "POST /posts": {
+        code: "600",
+        headers: [{"contentType": "json"}]
     }
 }
 `;
 
-const outgoing = transform(parse(missingProps, defaults), defaults);
+const outgoing = transform(parse(chrome, defaults), defaults);
 // console.log(JSON.stringify(outgoing, null, 2));
 
-var res1 = ts.createSourceFile('module', missingProps, ts.ModuleKind.None);
+var res1 = ts.createSourceFile('module', chrome, ts.ModuleKind.None);
 
 const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
 });
 
 outgoing.forEach(x => {
-    console.log(printer.printNode(ts.EmitHint.Unspecified, x, res1));
+    console.log(printer.printNode(ts.EmitHint.Unspecified, x, res1) + '\n');
 })
 // console.log(res1.statements[0].members[0].type);
 

@@ -113,7 +113,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                     return acc.concat([newInterface], getInterfaces(node.body));
                 }
 
-                // return acc.concat(getInterfaces(node.body));
+                return acc.concat(getInterfaces(node.body));
             }
 
             if (node.kind === ts.SyntaxKind.ArrayLiteralExpression) {
@@ -158,42 +158,15 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
                     return item;
                 }
                 case ts.SyntaxKind.ObjectLiteralExpression: {
-
                     if (node.interfaceCandidate) {
                         const item = namedProp({name: node.name});
                         item.type = ts.createTypeReferenceNode(newInterfaceName(node), undefined);
                         return item;
                     } else {
-                        console.log('HAHA');
+                        const item = namedProp({name: node.name});
+                        item.type = ts.createTypeLiteralNode(getMembers(node.body));
+                        return item;
                     }
-
-                    // if (node.interfaceCandidate) {
-                    //     const newInterface = createOne(node);
-                    //     // const matches = getMatches(newInterface.members);
-                    //     //
-                    //     // const interfaceName = matches.length
-                    //     //     ? matches[0].get('name')
-                    //     //     : newInterface.name;
-                    //
-                    //     return {
-                    //         kind: ts.SyntaxKind.TypeReference,
-                    //         _kind: ts.SyntaxKind[ts.SyntaxKind.TypeReference],
-                    //         name: node.name,
-                    //         optional: false,
-                    //         types: Set([newInterface.name]),
-                    //         members: []
-                    //     }
-                    // } else {
-                    //     return {
-                    //         kind: ts.SyntaxKind.TypeLiteral,
-                    //         _kind: ts.SyntaxKind[ts.SyntaxKind.TypeLiteral],
-                    //         name: node.name,
-                    //         optional: false,
-                    //         types: Set([]),
-                    //         members: getMembers(node.body)
-                    //     }
-                    // }
-                    break;
                 }
                 case ts.SyntaxKind.ArrayLiteralExpression: {
                     if (node.body.length) {

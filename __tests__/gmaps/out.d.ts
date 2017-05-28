@@ -1,62 +1,92 @@
 interface IRootObject {
-    results: IResultsItem[];
-    status: string;
+    version: IVersion;
+    domains: IDomainsItem[];
 }
-interface IResultsItem {
-    address_components: IAddressComponentsItem[];
-    formatted_address: string;
-    geometry: IGeometry;
-    place_id: string;
-    types: string[];
+
+interface IVersion {
+    major: string;
+    minor: string;
 }
-interface IAddressComponentsItem {
-    long_name: string;
-    short_name: string;
-    types: string[];
+
+interface IDomainsItem {
+    domain: string;
+    experimental?: boolean;
+    types?: ITypesItem[];
+    commands: ICommandsItem[];
+    events?: IEventsItem[];
+    description?: string;
+    dependencies?: string[];
+    deprecated?: boolean;
 }
-interface IAddressComponentsItem {
-    long_name: string;
-    short_name: string;
-    types: string[];
+
+interface ICommandsItem {
+    name: string;
+    description?: string;
+    returns?: IReturnsItem[];
+    parameters?: IParametersItem[];
+    experimental?: boolean;
+    redirect?: string;
+    handlers?: string[];
 }
-interface IAddressComponentsItem {
-    long_name: string;
-    short_name: string;
-    types: string[];
+
+interface IEventsItem {
+    name: string;
+    description?: string;
+    parameters?: IParametersItem[];
+    experimental?: boolean;
 }
-interface IAddressComponentsItem {
-    long_name: string;
-    short_name: string;
-    types: string[];
+
+interface IParametersItem {
+    name: string;
+    type?: string;
+    description?: string;
+    $ref?: string;
+    optional?: boolean;
+    experimental?: boolean;
+    'enum'?: string[];
+    deprecated?: boolean;
+    items?: IItems;
+    minItems?: number;
 }
-interface IAddressComponentsItem {
-    long_name: string;
-    short_name: string;
-    types: string[];
+
+interface ITypesItem {
+    id: string;
+    type: string;
+    'enum'?: string[];
+    description?: string;
+    properties?: IPropertiesItem[];
+    experimental?: boolean;
+    items?: IItems;
+    minItems?: number;
+    maxItems?: number;
 }
-interface IGeometry {
-    bounds: IBounds;
-    location: ILocation;
-    location_type: string;
-    viewport: IViewport;
+
+interface IReturnsItem {
+    name: string;
+    type?: string;
+    $ref?: string;
+    description?: string;
+    experimental?: boolean;
+    items?: IItems;
+    optional?: boolean;
 }
-interface IBounds {
-    northeast: INortheast;
-    southwest: ISouthwest;
+
+interface IPropertiesItem {
+    name: string;
+    type?: string;
+    description?: string;
+    optional?: boolean;
+    $ref?: string;
+    items?: IItems;
+    experimental?: boolean;
+    'enum'?: string[];
+    minItems?: number;
+    maxItems?: number;
 }
-interface INortheast {
-    lat: number;
-    lng: number;
-}
-interface ISouthwest {
-    lat: number;
-    lng: number;
-}
-interface ILocation {
-    lat: number;
-    lng: number;
-}
-interface IViewport {
-    northeast: INortheast;
-    southwest: ISouthwest;
+
+interface IItems {
+    $ref?: string;
+    type?: string;
+    'enum'?: string[];
+    description?: string;
 }
