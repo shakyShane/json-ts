@@ -22,3 +22,8 @@ it('matches petition', function () {
     expect(json2ts(gmaps)).toMatchSnapshot();
 });
 
+it('matches swagger', function () {
+    const gmaps = data('__tests__/swagger/schema.json');
+    expect(json2ts(gmaps)).toMatchSnapshot();
+});
+
