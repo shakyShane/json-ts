@@ -17,17 +17,17 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  summary: ISummary;
-  loc: ILoc;
+    summary: ISummary;
+    loc: ILoc;
 }
 
 interface ISummary {
-  loc: ILoc;
+    loc: ILoc;
 }
 
 interface ILoc {
-  lat: number;
-  lng: number;
+    lat: number;
+    lng: number;
 }
 `;
 

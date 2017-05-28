@@ -171,6 +171,6 @@ interface CustomAttributesItem {
 }
 `;
 
-it('works with large objects', function() {
+it.skip('works with large objects', function() {
     expect(json2ts(json, {prefix: ""})).toEqual(expected.slice(1));
 });

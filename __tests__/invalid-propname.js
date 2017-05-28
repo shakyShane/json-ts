@@ -2,13 +2,13 @@ const json2ts = require('../').json2ts;
 const assert = require('assert');
 
 const json = `{
-  "in^valid": "here";
+    "in^valid": "here";
 }
 `;
 
 const expected = `
 interface IRootObject {
-  'in^valid': string;
+    'in^valid': string;
 }
 `;
 

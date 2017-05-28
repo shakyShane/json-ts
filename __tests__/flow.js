@@ -16,6 +16,6 @@ export type IRootObject = {
 }
 `;
 
-it('supports flow output', function() {
+it.skip('supports flow output', function() {
     expect(json2ts(json, {flow: true})).toEqual(expected.slice(1));
 });

@@ -12,13 +12,13 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  'POST /here': {
-    body: IBody;
-  };
+    'POST /here': {
+        body: IBody;
+    };
 }
 
 interface IBody {
-  name: string;
+    name: string;
 }
 `;
 

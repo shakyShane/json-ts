@@ -11,12 +11,12 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  ids: number[];
-  user: IUser;
+    ids: number[];
+    user: IUser;
 }
 
 interface IUser {
-  pets: string[];
+    pets: string[];
 }
 `;
 

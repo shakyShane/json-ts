@@ -10,9 +10,9 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  alive: boolean;
-  sad: boolean;
-  bools: boolean[];
+    alive: boolean;
+    sad: boolean;
+    bools: boolean[];
 }
 `;
 

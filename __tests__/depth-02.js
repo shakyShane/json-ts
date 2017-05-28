@@ -20,25 +20,25 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  date: string;
-  summary: ISummary;
+    date: string;
+    summary: ISummary;
 }
 
 interface ISummary {
-  url: string;
-  path: string;
-  loc: ILoc;
+    url: string;
+    path: string;
+    loc: ILoc;
 }
 
 interface ILoc {
-  lat: number;
-  lng: number;
-  address: IAddress;
+    lat: number;
+    lng: number;
+    address: IAddress;
 }
 
 interface IAddress {
-  house_number: string;
-  street: string;
+    house_number: string;
+    street: string;
 }
 `;
 

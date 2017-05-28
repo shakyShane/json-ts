@@ -12,10 +12,10 @@ const json = `
 
 const expected = `
 interface IRootObject {
-  num: number;
-  neg: number;
-  decimal: number;
-  nums: number[];
+    num: number;
+    neg: number;
+    decimal: number;
+    nums: number[];
 }
 `;
 

@@ -17,17 +17,17 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  user: IUser;
-  admin: IAdmin;
+    user: IUser;
+    admin: IAdmin;
 }
 
 interface IUser {
-  name: string;
-  age: number;
+    name: string;
+    age: number;
 }
 
 interface IAdmin {
-  user: IUser;
+    user: IUser;
 }
 `;
 

@@ -21,12 +21,12 @@ const json = `
 
 const expected = `
 interface IRootObject {
-  items: IItemsItem[];
+    items: IItemsItem[];
 }
 
 interface IItemsItem {
-  attribute_code: string;
-  value: string[]|string;
+    attribute_code: string;
+    value: string[] | string;
 }
 `;
 

@@ -21,18 +21,28 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  geo: IGeo;
-  loc: IGeo;
-  geometry: IGeometry;
+    geo: IGeo;
+    loc: ILoc;
+    geometry: IGeometry;
 }
 
 interface IGeo {
-  lat: number;
-  lng: number;
+    lat: number;
+    lng: number;
+}
+
+interface ILoc {
+    lat: number;
+    lng: number;
 }
 
 interface IGeometry {
-  bounds: IGeo;
+    bounds: IBounds;
+}
+
+interface IBounds {
+    lat: number;
+    lng: number;
 }
 `;
 

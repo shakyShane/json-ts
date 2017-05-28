@@ -9,8 +9,8 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  alive: null;
-  nulls: null[];
+    alive: null;
+    nulls: null[];
 }
 `;
 

@@ -29,7 +29,7 @@ declare namespace Project {
 }
 `;
 
-it('can wrap in namespace', function() {
+it.skip('can wrap in namespace', function() {
 
     expect(json2ts(json, {namespace: 'Project'})).toEqual(expected.slice(1));
 });

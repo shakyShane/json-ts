@@ -8,7 +8,7 @@ const json = `{
 
 const expected = `
 interface IRootObject {
-  ids: any[];
+    ids: (number | string)[];
 }
 `;
 
