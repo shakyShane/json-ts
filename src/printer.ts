@@ -1,69 +1,19 @@
+import * as ts from 'typescript';
 import {InterfaceNode, log, MemberNode} from "./transformer";
 import needsQuotes = require('needsquotes');
 import {JsonTsOptions} from "./index";
 
-function displayName(name: string): string {
-    const needs = needsQuotes(name);
-
-    if (needs.needsQuotes) {
-        return needs.quotedValue;
-    }
-    return name;
-}
-
-function memberName(node: MemberNode): string {
-    const propName = displayName(node.name);
-    if (node.optional) {
-        return propName + '?'
-    }
-    return propName;
-}
-
-function typeDisplay(node: MemberNode): string {
-    return node.types.join('|');
-}
-
 export function print(interfaceNodes: InterfaceNode[], options: JsonTsOptions): string {
-    // log(interfaceNodes);
-    const lineEnd = options.flow ? ',' : ';';
-    const blocks = interfaceNodes
-        .reverse()
-        .map(node => {
-            return [
-                interfaceLine(node),
-                node.members.map(memberLine).join('\n'),
-                `}`
-            ].join('\n')
-        }).join('\n\n');
 
-    return wrapper(blocks, options) + '\n';
+    var res1 = ts.createSourceFile('module', '', ts.ModuleKind.None);
 
-    function interfaceLine (node: InterfaceNode): string {
-        if (options.flow) {
-            return `export type ${nameDisplay(node)} = {`
-        }
-        if (options.namespace) {
-            return `export interface ${nameDisplay(node)} {`
-        }
-        return `interface ${nameDisplay(node)} {`;
-    }
+    const printer = ts.createPrinter({
+        newLine: ts.NewLineKind.LineFeed,
+    });
 
-    function memberLine(node: MemberNode, indent = 0): string {
-        const indentString = new Array(indent).join('-');
-        if (node.types[0] === '__ObjectLiteralExpression') {
-            return [`${memberName(node)}: {`,
-                 node.members.map(x => memberLine(x, indent + 4)),
-                `}`
-            ].map(x => {
-                return `${x}`;
-            }).join('\n');
-        }
-        return `  ${memberName(node)}: ${typeDisplay(node)}${lineEnd}`
-    }
-
-    function nameDisplay(node: InterfaceNode) {
-        return node.name;
-    }
+    return interfaceNodes.map(x => {
+        return printer.printNode(ts.EmitHint.Unspecified, x, res1);
+    }).join('\n\n') + '\n';
 }
 
 function wrapper(blocks, options) {
