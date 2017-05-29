@@ -137,40 +137,40 @@ const json = `
 
 const expected = `
 interface RootObject {
-  id: number;
-  sku: string;
-  name: string;
-  attribute_set_id: number;
-  price: number;
-  status: number;
-  visibility: number;
-  type_id: string;
-  created_at: string;
-  updated_at: string;
-  extension_attributes: Array<any>;
-  product_links: Array<any>;
-  options: Array<any>;
-  media_gallery_entries: MediaGalleryEntriesItem[];
-  tier_prices: Array<any>;
-  custom_attributes: CustomAttributesItem[];
+    id: number;
+    sku: string;
+    name: string;
+    attribute_set_id: number;
+    price: number;
+    status: number;
+    visibility: number;
+    type_id: string;
+    created_at: string;
+    updated_at: string;
+    extension_attributes: any[];
+    product_links: any[];
+    options: any[];
+    media_gallery_entries: MediaGalleryEntriesItem[];
+    tier_prices: any[];
+    custom_attributes: CustomAttributesItem[];
 }
 
 interface MediaGalleryEntriesItem {
-  id: number;
-  media_type: string;
-  label: string;
-  position: number;
-  disabled: boolean;
-  types: string[];
-  file: string;
+    id: number;
+    media_type: string;
+    label: string;
+    position: number;
+    disabled: boolean;
+    types: string[];
+    file: string;
 }
 
 interface CustomAttributesItem {
-  attribute_code: string;
-  value?: string|string[];
+    attribute_code: string;
+    value: string | string[];
 }
 `;
 
-it.skip('works with large objects', function() {
+it('works with prefix=blank string', function() {
     expect(json2ts(json, {prefix: ""})).toEqual(expected.slice(1));
 });
