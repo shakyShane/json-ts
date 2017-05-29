@@ -11,6 +11,20 @@ export function print(interfaceNodes, options: JsonTsOptions): string {
         newLine: ts.NewLineKind.LineFeed,
     });
 
+    if (options.namespace) {
+        interfaceNodes.forEach(x => {
+            x.modifiers = [ts.createToken(ts.SyntaxKind.ExportKeyword)];
+        });
+        const ns = ts.createModuleDeclaration(
+            undefined,
+            [ts.createToken(ts.SyntaxKind.DeclareKeyword)],
+            ts.createIdentifier(options.namespace),
+            ts.createModuleBlock(interfaceNodes),
+            ts.NodeFlags.Namespace
+        );
+        return printer.printNode(ts.EmitHint.Unspecified, ns, result) + '\n';
+    }
+
     return interfaceNodes.map(x => {
         return printer.printNode(ts.EmitHint.Unspecified, x, result);
     }).join('\n\n') + '\n';

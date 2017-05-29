@@ -18,18 +18,16 @@ const json = `
 
 const expected = `
 declare namespace Project {
-  export interface IRootObject {
-    items: IItemsItem[];
-  }
-  
-  export interface IItemsItem {
-    attribute_code: string;
-    value: number[];
-  }
+    export interface IRootObject {
+        items: IItemsItem[];
+    }
+    export interface IItemsItem {
+        attribute_code: string;
+        value: number[];
+    }
 }
 `;
 
-it.skip('can wrap in namespace', function() {
-
+it('can wrap in namespace', function() {
     expect(json2ts(json, {namespace: 'Project'})).toEqual(expected.slice(1));
 });
