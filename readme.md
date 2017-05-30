@@ -1,11 +1,27 @@
 [![Build Status](https://travis-ci.org/shakyShane/json-ts.svg?branch=master)](https://travis-ci.org/shakyShane/json-ts)
 
-## json-ts
+## `npm install -g json-ts`
 
-> Automatically generate Typescript Definition files based on JSON input. This allows
- a frontend to verify it's using a backend correctly & optionally tie it into a CI environment.
+> Automatically generate Typescript Definition files or Flow types from JSON input. 
+
+> Use it via the API, CLI, or [Website](https://shakyshane.github.io/json-ts/)
  
 ![json-ts](https://cdn.rawgit.com/shakyShane/json-ts/37ce9b2b/json-ts2.gif)
+
+How does **json-ts** stack up against the competition?
+
+|Feature   |json-ts (this library)  |[json-to-ts](https://github.com/MariusAlch/json-to-ts)   |[json2ts](http://json2ts.com/)  |
+|---|---|---|---|
+|simple literal types (number, string etc) |**YES**   |YES   |YES   |
+|array type, all elements of same kind |**YES**   |YES   |YES   |
+|optional members | **YES** | YES | NO |
+|array union types | **YES**   |NO   |NO   |
+|recursive data structures ([see here](https://github.com/shakyShane/json-ts/blob/master/__tests__/magento/categories.json)) |**YES**   |NO   |NO   |
+|nested type literals (to account for invalid [interface names](https://github.com/shakyShane/json-ts/blob/master/__tests__/swagger/schema.json)) |**YES**   |NO   |NO   |
+|output @flow types |**YES**   |NO   |NO   |
+|Website |**[YES](https://shakyshane.github.io/json-ts/)**   |NO   |[YES](http://json2ts.com/)   |
+|CLI |**YES**   |NO   |NO   |
+|API |**YES**   |YES   |NO   |
  
 ## Quick-start
 ```bash
