@@ -10,12 +10,12 @@ const json = `{
 
 const expected = `
 export type IRootObject = {
-  alive: boolean,
-  sad: boolean,
-  bools: boolean[],
-}
+    alive: boolean;
+    sad: boolean;
+    bools: boolean[];
+};
 `;
 
-it.skip('supports flow output', function() {
+it('supports flow output', function() {
     expect(json2ts(json, {flow: true})).toEqual(expected.slice(1));
 });

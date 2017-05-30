@@ -11,6 +11,19 @@ export function print(interfaceNodes, options: JsonTsOptions): string {
         newLine: ts.NewLineKind.LineFeed,
     });
 
+    if (options.flow) {
+        const modified = interfaceNodes.map(x => {
+            const newNode : any = ts.createNode(ts.SyntaxKind.TypeAliasDeclaration);
+            newNode.modifiers = [ts.createToken(ts.SyntaxKind.ExportKeyword)];
+            newNode.type = ts.createTypeLiteralNode(x.members);
+            newNode.name = x.name;
+            return newNode;
+        });
+        return modified.map(x => {
+            return printer.printNode(ts.EmitHint.Unspecified, x, result);
+        }).join('\n') + '\n';
+    }
+
     if (options.namespace) {
         interfaceNodes.forEach(x => {
             x.modifiers = [ts.createToken(ts.SyntaxKind.ExportKeyword)];
