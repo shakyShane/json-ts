@@ -8,7 +8,7 @@
  
 ![json-ts](https://cdn.rawgit.com/shakyShane/json-ts/37ce9b2b/json-ts2.gif)
 
-How does **json-ts** stack up against the competition?
+### How does **json-ts** stack up against the competition?
 
 |Feature   |json-ts (this library)  |[json-to-ts](https://github.com/MariusAlch/json-to-ts)   |[json2ts](http://json2ts.com/)  |
 |---|---|---|---|
