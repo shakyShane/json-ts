@@ -1,5 +1,9 @@
-
 tasks:
+  build:
+    - browserify
+    - uglify
+    - copy
+
   browserify:
     description: A special build for browser-globals
     tasks:
@@ -14,17 +18,17 @@ tasks:
         @npm uglifyjs
         --compress --mangle --
         dist/json-ts.js > dist/json-ts.min.js
-        && cp dist/json-ts.min.js site/dist/json-ts.min.js
-    - ifChanged: site/lib/codemirror.js
+        && cp dist/json-ts.min.js docs/dist/json-ts.min.js
+    - ifChanged: docs/lib/codemirror.js
       tasks: >
         @npm uglifyjs
         --compress --mangle --
-        site/lib/codemirror.js > site/dist/codemirror.js
-    - ifChanged: site/javascript/javascript.js
+        docs/lib/codemirror.js > docs/dist/codemirror.js
+    - ifChanged: docs/javascript/javascript.js
       tasks: >
         @npm uglifyjs
         --compress --mangle --
-        site/javascript/javascript.js > site/dist/javascript.js
+        docs/javascript/javascript.js > docs/dist/javascript.js
 
   copy: >
-    @sh cp dist/json-ts.min.js site/json-ts.min.js
+    @sh cp dist/json-ts.min.js docs/json-ts.min.js

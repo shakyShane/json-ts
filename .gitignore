@@ -7,3 +7,4 @@ transformer.js
 example.js
 _.min.js
 /dist/**
+.crossbow
