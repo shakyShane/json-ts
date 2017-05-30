@@ -154,7 +154,6 @@ interface RootObject {
     tier_prices: any[];
     custom_attributes: CustomAttributesItem[];
 }
-
 interface MediaGalleryEntriesItem {
     id: number;
     media_type: string;
@@ -164,7 +163,6 @@ interface MediaGalleryEntriesItem {
     types: string[];
     file: string;
 }
-
 interface CustomAttributesItem {
     attribute_code: string;
     value: string | string[];

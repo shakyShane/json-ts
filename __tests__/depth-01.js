@@ -19,13 +19,11 @@ interface IRootObject {
     date: string;
     summary: ISummary;
 }
-
 interface ISummary {
     url: string;
     path: string;
     loc: ILoc;
 }
-
 interface ILoc {
     lat: number;
     lng: number;

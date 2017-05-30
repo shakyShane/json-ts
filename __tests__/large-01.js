@@ -154,7 +154,6 @@ interface IRootObject {
     tier_prices: any[];
     custom_attributes: ICustomAttributesItem[];
 }
-
 interface IMediaGalleryEntriesItem {
     id: number;
     media_type: string;
@@ -164,7 +163,6 @@ interface IMediaGalleryEntriesItem {
     types: string[];
     file: string;
 }
-
 interface ICustomAttributesItem {
     attribute_code: string;
     value: string | string[];

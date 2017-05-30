@@ -20,12 +20,10 @@ interface IRootObject {
     user: IUser;
     admin: IAdmin;
 }
-
 interface IUser {
     name: string;
     age: number;
 }
-
 interface IAdmin {
     user: IUser;
 }

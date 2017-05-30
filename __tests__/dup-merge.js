@@ -23,7 +23,6 @@ const expected = `
 interface IRootObject {
     items: IItemsItem[];
 }
-
 interface IItemsItem {
     attribute_code: string;
     value: string[] | string;

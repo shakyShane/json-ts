@@ -16,7 +16,6 @@ interface IRootObject {
         body: IBody;
     };
 }
-
 interface IBody {
     name: string;
 }

@@ -25,21 +25,17 @@ interface IRootObject {
     loc: ILoc;
     geometry: IGeometry;
 }
-
 interface IGeo {
     lat: number;
     lng: number;
 }
-
 interface ILoc {
     lat: number;
     lng: number;
 }
-
 interface IGeometry {
     bounds: IBounds;
 }
-
 interface IBounds {
     lat: number;
     lng: number;

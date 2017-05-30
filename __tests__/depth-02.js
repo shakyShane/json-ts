@@ -23,19 +23,16 @@ interface IRootObject {
     date: string;
     summary: ISummary;
 }
-
 interface ISummary {
     url: string;
     path: string;
     loc: ILoc;
 }
-
 interface ILoc {
     lat: number;
     lng: number;
     address: IAddress;
 }
-
 interface IAddress {
     house_number: string;
     street: string;

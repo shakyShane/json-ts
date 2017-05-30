@@ -18,7 +18,6 @@ const expected = `
 interface IRootObject {
     users: IUsersItem[];
 }
-
 interface IUsersItem {
     name: string;
 }

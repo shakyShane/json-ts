@@ -20,11 +20,9 @@ interface IRootObject {
     summary: ISummary;
     loc: ILoc;
 }
-
 interface ISummary {
     loc: ILoc;
 }
-
 interface ILoc {
     lat: number;
     lng: number;

@@ -27,7 +27,7 @@ export function print(interfaceNodes, options: JsonTsOptions): string {
 
     return interfaceNodes.map(x => {
         return printer.printNode(ts.EmitHint.Unspecified, x, result);
-    }).join('\n\n') + '\n';
+    }).join('\n') + '\n';
 }
 
 function wrapper(blocks, options) {

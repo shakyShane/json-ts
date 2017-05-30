@@ -5,7 +5,6 @@ exports[`matches gmaps 1`] = `
     results: IResultsItem[];
     status: string;
 }
-
 interface IResultsItem {
     address_components: IAddressComponentsItem[];
     formatted_address: string;
@@ -13,40 +12,33 @@ interface IResultsItem {
     place_id: string;
     types: string[];
 }
-
 interface IAddressComponentsItem {
     long_name: string;
     short_name: string;
     types: string[];
 }
-
 interface IGeometry {
     bounds: IBounds;
     location: ILocation;
     location_type: string;
     viewport: IViewport;
 }
-
 interface IBounds {
     northeast: INortheast;
     southwest: ISouthwest;
 }
-
 interface INortheast {
     lat: number;
     lng: number;
 }
-
 interface ISouthwest {
     lat: number;
     lng: number;
 }
-
 interface ILocation {
     lat: number;
     lng: number;
 }
-
 interface IViewport {
     northeast: INortheast;
     southwest: ISouthwest;
@@ -73,7 +65,6 @@ exports[`matches magento 1`] = `
     tier_prices: any[];
     custom_attributes: ICustomAttributesItem[];
 }
-
 interface IMediaGalleryEntriesItem {
     id: number;
     media_type: string;
@@ -83,7 +74,6 @@ interface IMediaGalleryEntriesItem {
     types: string[];
     file: string;
 }
-
 interface ICustomAttributesItem {
     attribute_code: string;
     value: string | string[];
@@ -104,7 +94,6 @@ exports[`matches magento categories 1`] = `
     product_count: number;
     children_data: IChildrenDataItem[];
 }
-
 interface IChildrenDataItem {
     id: number;
     parent_id: number;
@@ -126,7 +115,6 @@ exports[`matches petition 1`] = `
     version: string;
     result: IResult;
 }
-
 interface IResult {
     _about: string;
     definition: string;
@@ -142,7 +130,6 @@ interface IResult {
     totalResults: number;
     type: string[];
 }
-
 interface IItemsItem {
     _about: string;
     created: ICreated;
@@ -151,16 +138,13 @@ interface IItemsItem {
     numberOfSignatures: number;
     status: string;
 }
-
 interface ICreated {
     _value: string;
     _datatype: string;
 }
-
 interface IIdentifier {
     _value: string;
 }
-
 interface ILabel {
     _value: string;
 }
@@ -178,17 +162,14 @@ exports[`matches swagger 1`] = `
     paths: IPaths;
     definitions: IDefinitions;
 }
-
 interface IInfo {
     version: string;
     title: string;
 }
-
 interface ITagsItem {
     name: string;
     description: string;
 }
-
 interface IPaths {
     '/V1/store/storeViews': {
         get: IGet;
@@ -415,7 +396,6 @@ interface IPaths {
         post: IPost;
     };
 }
-
 interface IGet {
     tags: string[];
     description: string;
@@ -423,7 +403,6 @@ interface IGet {
     responses: IResponses;
     parameters?: IParametersItem[];
 }
-
 interface IResponses {
     200: I200;
     'default': {
@@ -433,12 +412,10 @@ interface IResponses {
     400?: I400;
     500?: I500;
 }
-
 interface I200 {
     description: string;
     schema: ISchema;
 }
-
 interface ISchema {
     type?: string;
     items?: IItems;
@@ -447,14 +424,12 @@ interface ISchema {
     properties?: IProperties;
     description?: string;
 }
-
 interface IItems {
     $ref?: string;
     type?: string;
     description?: string;
     items?: IItems;
 }
-
 interface IParametersItem {
     name: string;
     'in': string;
@@ -464,12 +439,10 @@ interface IParametersItem {
     schema?: ISchema;
     description?: string;
 }
-
 interface I400 {
     description: string;
     schema: ISchema;
 }
-
 interface IPost {
     tags: string[];
     description: string;
@@ -477,7 +450,6 @@ interface IPost {
     parameters?: IParametersItem[];
     responses: IResponses;
 }
-
 interface IProperties {
     customer?: ICustomer;
     password?: IPassword;
@@ -886,24 +858,19 @@ interface IProperties {
     gift_cards_amount_used?: IGift_cards_amount_used;
     base_gift_cards_amount_used?: IBase_gift_cards_amount_used;
 }
-
 interface ICustomer {
     $ref: string;
 }
-
 interface IPassword {
     type: string;
 }
-
 interface IRedirectUrl {
     type: string;
 }
-
 interface I500 {
     description: string;
     schema: ISchema;
 }
-
 interface IPut {
     tags: string[];
     description: string;
@@ -911,82 +878,64 @@ interface IPut {
     parameters: IParametersItem[];
     responses: IResponses;
 }
-
 interface IEmail {
     type: string;
     description?: string;
 }
-
 interface ITemplate {
     type: string;
 }
-
 interface IWebsiteId {
     type: string;
     description?: string;
 }
-
 interface ICustomerEmail {
     type: string;
 }
-
 interface IPaymentMethod {
     $ref: string;
 }
-
 interface IAddress {
     $ref: string;
 }
-
 interface ICartItem {
     $ref: string;
 }
-
 interface IMethod {
     $ref?: string;
     type?: string;
     description?: string;
 }
-
 interface IShippingCarrierCode {
     type: string;
     description: string;
 }
-
 interface IShippingMethodCode {
     type: string;
     description: string;
 }
-
 interface IAdditionalData {
     $ref: string;
 }
-
 interface IAddressInformation {
     $ref: string;
 }
-
 interface IBillingAddress {
     $ref: string;
 }
-
 interface IGiftCardAccountData {
     $ref: string;
 }
-
 interface IRegistryId {
     type: string;
     description: string;
 }
-
 interface IGiftMessage {
     $ref: string;
 }
-
 interface IUsername {
     type: string;
 }
-
 interface IDefinitions {
     'error-response': {
         type: string;
@@ -1746,1874 +1695,1489 @@ interface IDefinitions {
         description: string;
     };
 }
-
 interface IMessage {
     type: string;
     description: string;
 }
-
 interface IErrors {
     $ref: string;
 }
-
 interface ICode {
     type: string;
     description?: string;
 }
-
 interface IParameters {
     $ref: string;
 }
-
 interface ITrace {
     type: string;
     description: string;
 }
-
 interface IResources {
     type: string;
     description: string;
 }
-
 interface IFieldName {
     type: string;
     description: string;
 }
-
 interface IFieldValue {
     type: string;
     description: string;
 }
-
 interface IId {
     type: string;
     description?: string;
 }
-
 interface IName {
     type: string;
     description?: string;
 }
-
 interface IWebsite_id {
     type: string;
     description?: string;
 }
-
 interface IStore_group_id {
     type: string;
 }
-
 interface IExtension_attributes {
     $ref: string;
 }
-
 interface IRoot_category_id {
     type: string;
 }
-
 interface IDefault_store_id {
     type: string;
 }
-
 interface IDefault_group_id {
     type: string;
 }
-
 interface ILocale {
     type: string;
     description: string;
 }
-
 interface IBase_currency_code {
     type: string;
     description: string;
 }
-
 interface IDefault_display_currency_code {
     type: string;
     description: string;
 }
-
 interface ITimezone {
     type: string;
     description: string;
 }
-
 interface IWeight_unit {
     type: string;
     description: string;
 }
-
 interface IBase_url {
     type: string;
     description: string;
 }
-
 interface IBase_link_url {
     type: string;
     description: string;
 }
-
 interface IBase_static_url {
     type: string;
     description: string;
 }
-
 interface IBase_media_url {
     type: string;
     description: string;
 }
-
 interface ISecure_base_url {
     type: string;
     description: string;
 }
-
 interface ISecure_base_link_url {
     type: string;
     description: string;
 }
-
 interface ISecure_base_static_url {
     type: string;
     description: string;
 }
-
 interface ISecure_base_media_url {
     type: string;
     description: string;
 }
-
 interface IBase_currency_symbol {
     type: string;
     description: string;
 }
-
 interface IDefault_display_currency_symbol {
     type: string;
     description: string;
 }
-
 interface IAvailable_currency_codes {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IExchange_rates {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface ICurrency_to {
     type: string;
     description: string;
 }
-
 interface IRate {
     type: string;
     description: string;
 }
-
 interface ITwo_letter_abbreviation {
     type: string;
     description: string;
 }
-
 interface IThree_letter_abbreviation {
     type: string;
     description: string;
 }
-
 interface IFull_name_locale {
     type: string;
     description: string;
 }
-
 interface IFull_name_english {
     type: string;
     description: string;
 }
-
 interface IAvailable_regions {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IGroup_id {
     type: string;
     description: string;
 }
-
 interface IDefault_billing {
     type: string;
     description: string;
 }
-
 interface IDefault_shipping {
     type: string;
     description: string;
 }
-
 interface IConfirmation {
     type: string;
     description: string;
 }
-
 interface ICreated_at {
     type: string;
     description?: string;
 }
-
 interface IUpdated_at {
     type: string;
     description?: string;
 }
-
 interface ICreated_in {
     type: string;
     description: string;
 }
-
 interface IDob {
     type: string;
     description: string;
 }
-
 interface IFirstname {
     type: string;
     description: string;
 }
-
 interface ILastname {
     type: string;
     description: string;
 }
-
 interface IMiddlename {
     type: string;
     description: string;
 }
-
 interface IPrefix {
     type: string;
     description: string;
 }
-
 interface ISuffix {
     type: string;
     description: string;
 }
-
 interface IGender {
     type: string;
     description: string;
 }
-
 interface IStore_id {
     type: string;
     description: string;
 }
-
 interface ITaxvat {
     type: string;
     description: string;
 }
-
 interface IAddresses {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IDisable_auto_group_change {
     type: string;
     description: string;
 }
-
 interface ICustom_attributes {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface ICustomer_id {
     type: string;
     description: string;
 }
-
 interface IRegion {
     $ref?: string;
     type?: string;
     description?: string;
 }
-
 interface IRegion_id {
     type: string;
     description: string;
 }
-
 interface ICountry_id {
     type: string;
     description: string;
 }
-
 interface IStreet {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface ICompany {
     type: string;
     description: string;
 }
-
 interface ITelephone {
     type: string;
     description: string;
 }
-
 interface IFax {
     type: string;
     description: string;
 }
-
 interface IPostcode {
     type: string;
     description: string;
 }
-
 interface ICity {
     type: string;
     description: string;
 }
-
 interface IVat_id {
     type: string;
     description: string;
 }
-
 interface IRegion_code {
     type: string;
     description: string;
 }
-
 interface IAttribute_code {
     type: string;
     description: string;
 }
-
 interface IValue {
     type: string;
     description?: string;
 }
-
 interface IIs_subscribed {
     type: string;
 }
-
 interface IIdentifier {
     type: string;
     description: string;
 }
-
 interface ITitle {
     type: string;
     description?: string;
 }
-
 interface IPage_layout {
     type: string;
     description: string;
 }
-
 interface IMeta_title {
     type: string;
     description: string;
 }
-
 interface IMeta_keywords {
     type: string;
     description: string;
 }
-
 interface IMeta_description {
     type: string;
     description: string;
 }
-
 interface IContent_heading {
     type: string;
     description: string;
 }
-
 interface IContent {
     type?: string;
     description?: string;
     $ref?: string;
 }
-
 interface ICreation_time {
     type: string;
     description: string;
 }
-
 interface IUpdate_time {
     type: string;
     description: string;
 }
-
 interface ISort_order {
     type: string;
     description?: string;
 }
-
 interface ILayout_update_xml {
     type: string;
     description: string;
 }
-
 interface ICustom_theme {
     type: string;
     description: string;
 }
-
 interface ICustom_root_template {
     type: string;
     description: string;
 }
-
 interface ICustom_layout_update_xml {
     type: string;
     description: string;
 }
-
 interface ICustom_theme_from {
     type: string;
     description: string;
 }
-
 interface ICustom_theme_to {
     type: string;
     description: string;
 }
-
 interface IActive {
     type: string;
     description: string;
 }
-
 interface ISearch_criteria {
     $ref: string;
 }
-
 interface ITotal_count {
     type: string;
     description: string;
 }
-
 interface ISku {
     type: string;
     description?: string;
 }
-
 interface IAttribute_set_id {
     type: string;
     description: string;
 }
-
 interface IPrice {
     type: string;
     description: string;
 }
-
 interface IStatus {
     type: string;
     description: string;
 }
-
 interface IVisibility {
     type: string;
     description: string;
 }
-
 interface IType_id {
     type: string;
     description: string;
 }
-
 interface IWeight {
     type: string;
     description: string;
 }
-
 interface IProduct_links {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IOptions {
     type: string;
     description: string;
     items?: IItems;
 }
-
 interface IMedia_gallery_entries {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface ITier_prices {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IStock_item {
     $ref: string;
 }
-
 interface IBundle_product_options {
     type: string;
     items: IItems;
 }
-
 interface IDownloadable_product_links {
     type: string;
     items: IItems;
 }
-
 interface IDownloadable_product_samples {
     type: string;
     items: IItems;
 }
-
 interface IGiftcard_amounts {
     type: string;
     items: IItems;
 }
-
 interface IConfigurable_product_options {
     type: string;
     items: IItems;
 }
-
 interface IConfigurable_product_links {
     type: string;
     items: IItems;
 }
-
 interface IItem_id {
     type: string;
     description?: string;
 }
-
 interface IProduct_id {
     type: string;
 }
-
 interface IStock_id {
     type: string;
     description?: string;
 }
-
 interface IQty {
     type: string;
     description?: string;
 }
-
 interface IIs_in_stock {
     type: string;
     description: string;
 }
-
 interface IIs_qty_decimal {
     type: string;
 }
-
 interface IShow_default_notification_message {
     type: string;
 }
-
 interface IUse_config_min_qty {
     type: string;
 }
-
 interface IMin_qty {
     type: string;
     description: string;
 }
-
 interface IUse_config_min_sale_qty {
     type: string;
 }
-
 interface IMin_sale_qty {
     type: string;
     description: string;
 }
-
 interface IUse_config_max_sale_qty {
     type: string;
 }
-
 interface IMax_sale_qty {
     type: string;
     description: string;
 }
-
 interface IUse_config_backorders {
     type: string;
 }
-
 interface IBackorders {
     type: string;
     description: string;
 }
-
 interface IUse_config_notify_stock_qty {
     type: string;
 }
-
 interface INotify_stock_qty {
     type: string;
     description: string;
 }
-
 interface IUse_config_qty_increments {
     type: string;
 }
-
 interface IQty_increments {
     type: string;
     description: string;
 }
-
 interface IUse_config_enable_qty_inc {
     type: string;
 }
-
 interface IEnable_qty_increments {
     type: string;
     description: string;
 }
-
 interface IUse_config_manage_stock {
     type: string;
 }
-
 interface IManage_stock {
     type: string;
     description: string;
 }
-
 interface ILow_stock_date {
     type: string;
 }
-
 interface IIs_decimal_divided {
     type: string;
 }
-
 interface IStock_status_changed_auto {
     type: string;
 }
-
 interface IOption_id {
     type: string;
     description: string;
 }
-
 interface IRequired {
     type: string;
     description: string;
 }
-
 interface IType {
     type: string;
     description: string;
 }
-
 interface IPosition {
     type: string;
     description?: string;
 }
-
 interface IIs_default {
     type: string;
     description: string;
 }
-
 interface IPrice_type {
     type: string;
     description: string;
 }
-
 interface ICan_change_quantity {
     type: string;
     description: string;
 }
-
 interface IIs_shareable {
     type: string;
     description: string;
 }
-
 interface INumber_of_downloads {
     type: string;
     description: string;
 }
-
 interface ILink_type {
     type: string;
     description?: string;
 }
-
 interface ILink_file {
     type: string;
     description: string;
 }
-
 interface ILink_file_content {
     $ref: string;
 }
-
 interface ILink_url {
     type: string;
     description: string;
 }
-
 interface ISample_type {
     type: string;
 }
-
 interface ISample_file {
     type: string;
     description: string;
 }
-
 interface ISample_file_content {
     $ref: string;
 }
-
 interface ISample_url {
     type: string;
     description: string;
 }
-
 interface IFile_data {
     type: string;
     description: string;
 }
-
 interface IAttribute_id {
     type: string;
     description?: string;
 }
-
 interface IWebsite_value {
     type: string;
 }
-
 interface ILabel {
     type: string;
     description?: string;
 }
-
 interface IIs_use_default {
     type: string;
 }
-
 interface IValues {
     type: string;
     items: IItems;
     description?: string;
 }
-
 interface IValue_index {
     type: string;
 }
-
 interface ILinked_product_sku {
     type: string;
     description: string;
 }
-
 interface ILinked_product_type {
     type: string;
     description: string;
 }
-
 interface IProduct_sku {
     type: string;
     description: string;
 }
-
 interface IIs_require {
     type: string;
     description: string;
 }
-
 interface IFile_extension {
     type: string;
 }
-
 interface IMax_characters {
     type: string;
 }
-
 interface IImage_size_x {
     type: string;
 }
-
 interface IImage_size_y {
     type: string;
 }
-
 interface IOption_type_id {
     type: string;
     description: string;
 }
-
 interface IMedia_type {
     type: string;
     description: string;
 }
-
 interface IDisabled {
     type: string;
     description: string;
 }
-
 interface ITypes {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IFile {
     type: string;
     description: string;
 }
-
 interface IBase64_encoded_data {
     type: string;
     description: string;
 }
-
 interface IVideo_content {
     $ref: string;
 }
-
 interface IVideo_provider {
     type: string;
     description: string;
 }
-
 interface IVideo_url {
     type: string;
     description: string;
 }
-
 interface IVideo_title {
     type: string;
     description: string;
 }
-
 interface IVideo_description {
     type: string;
     description: string;
 }
-
 interface IVideo_metadata {
     type: string;
     description: string;
 }
-
 interface ICustomer_group_id {
     type: string;
     description: string;
 }
-
 interface IFilter_groups {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface ISort_orders {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IPage_size {
     type: string;
     description: string;
 }
-
 interface ICurrent_page {
     type: string;
     description: string;
 }
-
 interface IFilters {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IField {
     type: string;
     description: string;
 }
-
 interface ICondition_type {
     type: string;
     description: string;
 }
-
 interface IDirection {
     type: string;
     description: string;
 }
-
 interface IIs_wysiwyg_enabled {
     type: string;
     description: string;
 }
-
 interface IIs_html_allowed_on_front {
     type: string;
     description: string;
 }
-
 interface IUsed_for_sort_by {
     type: string;
     description: string;
 }
-
 interface IIs_filterable {
     type: string;
     description: string;
 }
-
 interface IIs_filterable_in_search {
     type: string;
     description: string;
 }
-
 interface IIs_used_in_grid {
     type: string;
     description: string;
 }
-
 interface IIs_visible_in_grid {
     type: string;
     description: string;
 }
-
 interface IIs_filterable_in_grid {
     type: string;
     description: string;
 }
-
 interface IApply_to {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IIs_searchable {
     type: string;
     description: string;
 }
-
 interface IIs_visible_in_advanced_search {
     type: string;
     description: string;
 }
-
 interface IIs_comparable {
     type: string;
     description: string;
 }
-
 interface IIs_used_for_promo_rules {
     type: string;
     description: string;
 }
-
 interface IIs_visible_on_front {
     type: string;
     description: string;
 }
-
 interface IUsed_in_product_listing {
     type: string;
     description: string;
 }
-
 interface IIs_visible {
     type: string;
     description: string;
 }
-
 interface IScope {
     type: string;
     description: string;
 }
-
 interface IFrontend_input {
     type: string;
     description: string;
 }
-
 interface IEntity_type_id {
     type: string;
     description: string;
 }
-
 interface IIs_required {
     type: string;
     description: string;
 }
-
 interface IIs_user_defined {
     type: string;
     description: string;
 }
-
 interface IDefault_frontend_label {
     type: string;
     description: string;
 }
-
 interface IFrontend_labels {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface INote {
     type: string;
     description: string;
 }
-
 interface IBackend_type {
     type: string;
     description: string;
 }
-
 interface IBackend_model {
     type: string;
     description: string;
 }
-
 interface ISource_model {
     type: string;
     description: string;
 }
-
 interface IDefault_value {
     type: string;
     description: string;
 }
-
 interface IIs_unique {
     type: string;
     description: string;
 }
-
 interface IFrontend_class {
     type: string;
     description: string;
 }
-
 interface IValidation_rules {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IStore_labels {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IKey {
     type: string;
     description: string;
 }
-
 interface IAttribute_set_name {
     type: string;
     description: string;
 }
-
 interface IAttribute_group_id {
     type: string;
     description: string;
 }
-
 interface IAttribute_group_name {
     type: string;
     description: string;
 }
-
 interface IAttribute_group_code {
     type: string;
 }
-
 interface IParent_id {
     type: string;
     description: string;
 }
-
 interface IIs_active {
     type: string;
     description: string;
 }
-
 interface ILevel {
     type: string;
     description: string;
 }
-
 interface IChildren {
     type: string;
 }
-
 interface IPath {
     type: string;
 }
-
 interface IAvailable_sort_by {
     type: string;
     items: IItems;
 }
-
 interface IInclude_in_menu {
     type: string;
 }
-
 interface IProduct_count {
     type: string;
     description: string;
 }
-
 interface IChildren_data {
     type: string;
     items: IItems;
 }
-
 interface ICategory_id {
     type: string;
     description: string;
 }
-
 interface IStock_status {
     type: string;
 }
-
 interface IAggregations {
     $ref: string;
 }
-
 interface IBuckets {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IBucket_names {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IMetrics {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IRequest_name {
     type: string;
 }
-
 interface IConverted_at {
     type: string;
     description: string;
 }
-
 interface IIs_virtual {
     type: string;
     description: string;
 }
-
 interface IItems_count {
     type: string;
     description: string;
 }
-
 interface IItems_qty {
     type: string;
     description: string;
 }
-
 interface IBilling_address {
     $ref: string;
 }
-
 interface IReserved_order_id {
     type: string;
     description: string;
 }
-
 interface IOrig_order_id {
     type: string;
     description: string;
 }
-
 interface ICurrency {
     $ref: string;
 }
-
 interface ICustomer_is_guest {
     type: string;
     description: string;
 }
-
 interface ICustomer_note {
     type: string;
     description: string;
 }
-
 interface ICustomer_note_notify {
     type: string;
     description: string;
 }
-
 interface ICustomer_tax_class_id {
     type: string;
     description: string;
 }
-
 interface IProduct_type {
     type: string;
     description: string;
 }
-
 interface IQuote_id {
     type: string;
     description: string;
 }
-
 interface IProduct_option {
     $ref: string;
 }
-
 interface ICustom_options {
     type: string;
     items: IItems;
 }
-
 interface IBundle_options {
     type: string;
     items: IItems;
 }
-
 interface IDownloadable_option {
     $ref: string;
 }
-
 interface IGiftcard_item_option {
     $ref: string;
 }
-
 interface IConfigurable_item_options {
     type: string;
     items: IItems;
 }
-
 interface IOption_value {
     type: string;
     description: string;
 }
-
 interface IFile_info {
     $ref: string;
 }
-
 interface IOption_qty {
     type: string;
     description: string;
 }
-
 interface IOption_selections {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IDownloadable_links {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IGiftcard_amount {
     type: string;
     description: string;
 }
-
 interface ICustom_giftcard_amount {
     type: string;
     description: string;
 }
-
 interface IGiftcard_sender_name {
     type: string;
     description: string;
 }
-
 interface IGiftcard_recipient_name {
     type: string;
     description: string;
 }
-
 interface IGiftcard_sender_email {
     type: string;
     description: string;
 }
-
 interface IGiftcard_recipient_email {
     type: string;
     description: string;
 }
-
 interface IGiftcard_message {
     type: string;
     description: string;
 }
-
 interface ISame_as_billing {
     type: string;
     description: string;
 }
-
 interface ICustomer_address_id {
     type: string;
     description: string;
 }
-
 interface ISave_in_address_book {
     type: string;
     description: string;
 }
-
 interface IGift_registry_id {
     type: string;
 }
-
 interface IGlobal_currency_code {
     type: string;
     description: string;
 }
-
 interface IStore_currency_code {
     type: string;
     description: string;
 }
-
 interface IQuote_currency_code {
     type: string;
     description: string;
 }
-
 interface IStore_to_base_rate {
     type: string;
     description: string;
 }
-
 interface IStore_to_quote_rate {
     type: string;
     description: string;
 }
-
 interface IBase_to_global_rate {
     type: string;
     description: string;
 }
-
 interface IBase_to_quote_rate {
     type: string;
     description: string;
 }
-
 interface IShipping_assignments {
     type: string;
     items: IItems;
 }
-
 interface IShipping {
     $ref: string;
 }
-
 interface IPo_number {
     type: string;
     description: string;
 }
-
 interface IAdditional_data {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IAgreement_ids {
     type: string;
     items: IItems;
 }
-
 interface ICarrier_code {
     type: string;
     description: string;
 }
-
 interface IMethod_code {
     type: string;
     description: string;
 }
-
 interface ICarrier_title {
     type: string;
     description: string;
 }
-
 interface IMethod_title {
     type: string;
     description: string;
 }
-
 interface IAmount {
     type: string;
     description: string;
 }
-
 interface IBase_amount {
     type: string;
     description: string;
 }
-
 interface IAvailable {
     type: string;
     description: string;
 }
-
 interface IError_message {
     type: string;
     description: string;
 }
-
 interface IPrice_excl_tax {
     type: string;
     description: string;
 }
-
 interface IPrice_incl_tax {
     type: string;
     description: string;
 }
-
 interface IGift_messages {
     type: string;
     items: IItems;
 }
-
 interface IGift_message_id {
     type: string;
     description: string;
 }
-
 interface ISender {
     type: string;
     description: string;
 }
-
 interface IRecipient {
     type: string;
     description: string;
 }
-
 interface IEntity_id {
     type: string;
 }
-
 interface IEntity_type {
     type: string;
 }
-
 interface IWrapping_id {
     type: string;
 }
-
 interface IWrapping_allow_gift_receipt {
     type: string;
 }
-
 interface IWrapping_add_printed_card {
     type: string;
 }
-
 interface IGrand_total {
     type: string;
     description: string;
 }
-
 interface IBase_grand_total {
     type: string;
     description: string;
 }
-
 interface ISubtotal {
     type: string;
     description: string;
 }
-
 interface IBase_subtotal {
     type: string;
     description: string;
 }
-
 interface IDiscount_amount {
     type: string;
     description: string;
 }
-
 interface IBase_discount_amount {
     type: string;
     description: string;
 }
-
 interface ISubtotal_with_discount {
     type: string;
     description: string;
 }
-
 interface IBase_subtotal_with_discount {
     type: string;
     description: string;
 }
-
 interface IShipping_amount {
     type: string;
     description: string;
 }
-
 interface IBase_shipping_amount {
     type: string;
     description: string;
 }
-
 interface IShipping_discount_amount {
     type: string;
     description: string;
 }
-
 interface IBase_shipping_discount_amount {
     type: string;
     description: string;
 }
-
 interface ITax_amount {
     type: string;
     description: string;
 }
-
 interface IBase_tax_amount {
     type: string;
     description: string;
 }
-
 interface IWeee_tax_applied_amount {
     type: string;
     description: string;
 }
-
 interface IShipping_tax_amount {
     type: string;
     description: string;
 }
-
 interface IBase_shipping_tax_amount {
     type: string;
     description: string;
 }
-
 interface ISubtotal_incl_tax {
     type: string;
     description: string;
 }
-
 interface IBase_subtotal_incl_tax {
     type: string;
     description: string;
 }
-
 interface IShipping_incl_tax {
     type: string;
     description: string;
 }
-
 interface IBase_shipping_incl_tax {
     type: string;
     description: string;
 }
-
 interface ICoupon_code {
     type: string;
     description: string;
 }
-
 interface ITotal_segments {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IBase_price {
     type: string;
     description: string;
 }
-
 interface IRow_total {
     type: string;
     description: string;
 }
-
 interface IBase_row_total {
     type: string;
     description: string;
 }
-
 interface IRow_total_with_discount {
     type: string;
     description: string;
 }
-
 interface ITax_percent {
     type: string;
     description: string;
 }
-
 interface IDiscount_percent {
     type: string;
     description: string;
 }
-
 interface IBase_price_incl_tax {
     type: string;
     description: string;
 }
-
 interface IRow_total_incl_tax {
     type: string;
     description: string;
 }
-
 interface IBase_row_total_incl_tax {
     type: string;
     description: string;
 }
-
 interface IWeee_tax_applied {
     type: string;
     description: string;
 }
-
 interface IArea {
     type: string;
     description: string;
 }
-
 interface ITax_grandtotal_details {
     type: string;
     items: IItems;
 }
-
 interface IGift_cards {
     type: string;
     description?: string;
     items?: IItems;
 }
-
 interface IGw_order_id {
     type: string;
 }
-
 interface IGw_item_ids {
     type: string;
     items: IItems;
 }
-
 interface IGw_allow_gift_receipt {
     type: string;
 }
-
 interface IGw_add_card {
     type: string;
 }
-
 interface IGw_price {
     type: string;
 }
-
 interface IGw_base_price {
     type: string;
 }
-
 interface IGw_items_price {
     type: string;
 }
-
 interface IGw_items_base_price {
     type: string;
 }
-
 interface IGw_card_price {
     type: string;
 }
-
 interface IGw_card_base_price {
     type: string;
 }
-
 interface IGw_base_tax_amount {
     type: string;
 }
-
 interface IGw_tax_amount {
     type: string;
 }
-
 interface IGw_items_base_tax_amount {
     type: string;
 }
-
 interface IGw_items_tax_amount {
     type: string;
 }
-
 interface IGw_card_base_tax_amount {
     type: string;
 }
-
 interface IGw_card_tax_amount {
     type: string;
 }
-
 interface IGw_price_incl_tax {
     type: string;
 }
-
 interface IGw_base_price_incl_tax {
     type: string;
 }
-
 interface IGw_card_price_incl_tax {
     type: string;
 }
-
 interface IGw_card_base_price_incl_tax {
     type: string;
 }
-
 interface IGw_items_price_incl_tax {
     type: string;
 }
-
 interface IGw_items_base_price_incl_tax {
     type: string;
 }
-
 interface IRates {
     type: string;
     description: string;
     items: IItems;
 }
-
 interface IPercent {
     type: string;
     description: string;
 }
-
 interface IBase_customer_balance_amount {
     type: string;
 }
-
 interface ICustomer_balance_amount {
     type: string;
 }
-
 interface IReward_points_balance {
     type: string;
 }
-
 interface IReward_currency_amount {
     type: string;
 }
-
 interface IBase_reward_currency_amount {
     type: string;
 }
-
 interface IShipping_address {
     $ref: string;
 }
-
 interface IShipping_method_code {
     type: string;
     description: string;
 }
-
 interface IShipping_carrier_code {
     type: string;
     description: string;
 }
-
 interface IPayment_methods {
     type: string;
     items: IItems;
 }
-
 interface ITotals {
     $ref: string;
 }
-
 interface IGift_cards_amount {
     type: string;
     description: string;
 }
-
 interface IBase_gift_cards_amount {
     type: string;
     description: string;
 }
-
 interface IGift_cards_amount_used {
     type: string;
     description: string;
 }
-
 interface IBase_gift_cards_amount_used {
     type: string;
     description: string;

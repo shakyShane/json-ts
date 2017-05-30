@@ -14,7 +14,6 @@ interface IRootObject {
     ids: number[];
     user: IUser;
 }
-
 interface IUser {
     pets: string[];
 }
