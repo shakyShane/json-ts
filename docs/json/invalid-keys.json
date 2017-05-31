@@ -1,0 +1,9 @@
+{
+  "users": {
+    "POST /user": {
+      "headers": {
+        "content-type": "application/json"
+      }
+    }
+  }
+}
