@@ -10,7 +10,7 @@
   },
   "scripts": {
     "test": "tsc && jest",
-    "prepublish": "tsc && jest"
+    "prepublish": "npm test"
   },
   "bin": {
     "json-ts": "dist/bin.js"
@@ -20,6 +20,7 @@
     "src",
     "_.js"
   ],
+  "repository": "shakyshane/json-ts",
   "main": "dist/index.js",
   "devDependencies": {
     "@types/node": "^7.0.18",
