@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "name": "shane",
+      "age": "32"
+    },
+    {
+      "name": "sally",
+      "age": "29",
+      "pets": [{
+        "type": "cat",
+        "name": "kittie"
+      }]
+    }
+  ]
+}

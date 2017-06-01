@@ -1,6 +1,5 @@
 .idea
 node_modules
-index.js
 parser.js
 printer.js
 transformer.js
