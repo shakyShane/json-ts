@@ -1,6 +1,6 @@
 const fetch = require('unfetch').default;
 
-const iniialJson = `{
+const iniialJson = getHash() || `{
     "author": "shakyShane",
     "profile": {
         "links": [
@@ -47,9 +47,11 @@ examples.forEach(([json, title]) => {
 });
 
 examplesElem.addEventListener('change', function () {
-    examplesElem.parentNode.classList.add('loading');
-    const resp = fetch(examplesElem.value).then(x => x.text());
-    resp.then(x => jsonInput.setValue(x));
+    if (examplesElem.value !== 'Select an example') {
+        examplesElem.parentNode.classList.add('loading');
+        const resp = fetch(examplesElem.value).then(x => x.text());
+        resp.then(x => jsonInput.setValue(x));
+    }
 });
 
 let defaults = {
@@ -101,6 +103,24 @@ jsonInput.on('change', function (obj) {
         status('error', `Error parsing JSON: ${e.message}`);
         console.log('Some JSON error?', e.message);
     }
+});
+
+function getHash() {
+    if (window.location.hash) {
+        if (window.location.hash.slice(0, 5) === '#src=') {
+            const maybe = window.location.hash.slice(5);
+            if (maybe) {
+                return decodeURIComponent(maybe);
+            }
+        }
+    }
+    return "";
+}
+
+const share = $('a[href="#share"]');
+share.addEventListener('click', function (e) {
+    e.preventDefault();
+    window.location.hash = `src=${encodeURIComponent(jsonInput.getValue().trim())}`;
 });
 
 function status(type, text) {
