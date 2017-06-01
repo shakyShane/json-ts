@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "unfetch": "^2.1.2",
+    "webpack": "^2.6.1"
+  }
+}
