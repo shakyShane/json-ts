@@ -1,6 +1,6 @@
 {
   "name": "json-ts",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "dependencies": {
     "get-stdin": "^5.0.1",
     "immutable": "^3.8.1",
