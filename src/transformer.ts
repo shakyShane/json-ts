@@ -56,9 +56,8 @@ const safeUnions = Set([
     ts.SyntaxKind.NullKeyword,
 ]);
 
-export function transform(stack: ParsedNode[], options: JsonTsOptions): InterfaceNode[] {
+export function transform(stack: ParsedNode[], options: JsonTsOptions): Node[] {
 
-    const interfaceStack = [];
     const wrapper = [{
         kind: ts.SyntaxKind.ObjectLiteralExpression,
         _kind: 'ObjectLiteralExpression',
@@ -67,8 +66,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         body: stack
     }];
 
-    const interfaces = getInterfaces(wrapper);
-    return collapseInterfaces(interfaces);
+    return getInterfaces(wrapper);
 
     function createOne(node: ParsedNode): InterfaceNode {
 

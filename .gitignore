@@ -4,6 +4,7 @@ parser.js
 printer.js
 transformer.js
 example.js
+src/*.js
 _.min.js
 /dist/**
 .crossbow/**

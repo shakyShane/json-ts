@@ -57,7 +57,7 @@ export function collapseInterfaces(interfaces: any[]): any[] {
                         if (currentMemberNames.has(int.name.text)) {
                             console.log('exists in both, maybe union', int.name.text);
                         } else {
-                            // console.log('incoming current does not exist in prev');
+                            // console.log('incoming current does not exist in prev', int.members.map(x => x.name.text));
                             const existinMemberNames = Set(int.members.map(x => x.name.text));
                             const newMembers = int.members.slice();
 
@@ -119,7 +119,7 @@ export function collapseInterfaces(interfaces: any[]): any[] {
                     return int;
                 });
         } else {
-            // console.log('Agressive merge here?')
+            console.log('Agressive merge here?')
         }
 
         return acc.concat(current);
