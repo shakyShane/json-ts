@@ -19,9 +19,12 @@ export function print(interfaceNodes, options: JsonTsOptions): string {
             newNode.name = x.name;
             return newNode;
         });
-        return modified.map(x => {
+
+        const items = modified.map(x => {
             return printer.printNode(ts.EmitHint.Unspecified, x, result);
         }).join('\n') + '\n';
+
+        return ['// @flow', items].join('\n');
     }
 
     if (options.namespace) {

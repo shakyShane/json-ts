@@ -9,6 +9,7 @@ const json = `{
 `;
 
 const expected = `
+// @flow
 export type IRootObject = {
     alive: boolean;
     sad: boolean;
