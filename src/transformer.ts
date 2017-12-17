@@ -69,6 +69,12 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
 
     const interfaces = getInterfaces(wrapper);
 
+    /**
+     * {
+     *  'IItems': {count: 5, names: Set {'pets', 'age'} }
+     * }
+     * @type {any}
+     */
     const memberStack = interfaces.reduce((acc, int) => {
         const lookup = acc[int.name.text];
         if (lookup) {
@@ -82,6 +88,10 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         return acc;
     }, {});
 
+    /**
+     * Look at each interface and mark any members absent in others
+     * as optional.
+     */
     interfaces.forEach((i) => {
         const curName = i.name.text;
         const fromStack = memberStack[curName];
