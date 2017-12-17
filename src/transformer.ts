@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import {ParsedNode} from "./parser";
-import {Set} from "immutable";
+import {Set as ImmutableSet} from "immutable";
 import needsQuotes = require('needsquotes');
 import {JsonTsOptions} from "./index";
 import {collapseInterfaces} from "./collapse-interfaces";
@@ -11,7 +11,7 @@ const {startCase, toLower} = require('../_');
 export const log = (input) => console.log('--\n', JSON.stringify(input, null, 2));
 
 export interface MemberNode {
-    types: Set<string>
+    types: ImmutableSet<string>
     members: MemberNode[]
     name: string
     optional: boolean
@@ -47,7 +47,7 @@ export function namedProp(member) {
     return prop;
 }
 
-const safeUnions = Set([
+const safeUnions = ImmutableSet([
     ts.SyntaxKind.TrueKeyword,
     ts.SyntaxKind.FalseKeyword,
     ts.SyntaxKind.StringLiteral,
@@ -68,6 +68,34 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
     }];
 
     const interfaces = getInterfaces(wrapper);
+
+    const memberStack = interfaces.reduce((acc, int) => {
+        const lookup = acc[int.name.text];
+        if (lookup) {
+            lookup.count += 1;
+            int.members.forEach(mem => {
+                lookup.names.add(mem.name.text);
+            })
+        } else {
+            acc[int.name.text] = {count: 1, names: new Set([])}
+        }
+        return acc;
+    }, {});
+
+    interfaces.forEach((i) => {
+        const curName = i.name.text;
+        const fromStack = memberStack[curName];
+        if (fromStack.count === 1) {
+            return;
+        }
+        i.members.forEach(localMember => {
+            const localName = localMember.name.text;
+            if (!fromStack.names.has(localName)) {
+                localMember.questionToken = ts.createNode(ts.SyntaxKind.QuestionToken);
+            }
+        });
+    });
+
     return collapseInterfaces(interfaces);
 
     function createOne(node: ParsedNode): InterfaceNode {
@@ -80,7 +108,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         return item;
     }
 
-    function getInterfaces(nodes: ParsedNode[]): Node[] {
+    function getInterfaces(nodes: ParsedNode[]): any[] {
         return nodes.reduce((acc, node) => {
 
             if (node.kind === ts.SyntaxKind.ObjectLiteralExpression) {
@@ -166,7 +194,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
     }
 
     function getArrayElementsType(node: ParsedNode): any {
-        const kinds = Set(node.body.map(x => x.kind));
+        const kinds = ImmutableSet(node.body.map(x => x.kind));
         if (kinds.size === 1) { // if there's only 1 kind in the array, it's safe to use type[];
             const kind = kinds.first();
             switch(kind) {
