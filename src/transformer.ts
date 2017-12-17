@@ -215,7 +215,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         return string[0].toUpperCase() + string.slice(1);
     }
     function pascalCase(input): string {
-        return startCase(toLower(input)).replace(/ /g, '');
+        return startCase(input).replace(/ /g, '');
     }
     function getArrayInterfaceItemName(input): string {
         if (options.prefix) {
