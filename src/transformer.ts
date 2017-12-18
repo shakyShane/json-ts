@@ -58,7 +58,6 @@ const safeUnions = ImmutableSet([
 
 export function transform(stack: ParsedNode[], options: JsonTsOptions): InterfaceNode[] {
 
-    const interfaceStack = [];
     const wrapper = [{
         kind: ts.SyntaxKind.ObjectLiteralExpression,
         _kind: 'ObjectLiteralExpression',
@@ -68,43 +67,6 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
     }];
 
     const interfaces = getInterfaces(wrapper);
-
-    /**
-     * {
-     *  'IItems': {count: 5, names: Set {'pets', 'age'} }
-     * }
-     * @type {any}
-     */
-    const memberStack = interfaces.reduce((acc, int) => {
-        const lookup = acc[int.name.text];
-        if (lookup) {
-            lookup.count += 1;
-            int.members.forEach(mem => {
-                lookup.names.add(mem.name.text);
-            })
-        } else {
-            acc[int.name.text] = {count: 1, names: new Set([])}
-        }
-        return acc;
-    }, {});
-
-    /**
-     * Look at each interface and mark any members absent in others
-     * as optional.
-     */
-    interfaces.forEach((i) => {
-        const curName = i.name.text;
-        const fromStack = memberStack[curName];
-        if (fromStack.count === 1) {
-            return;
-        }
-        i.members.forEach(localMember => {
-            const localName = localMember.name.text;
-            if (!fromStack.names.has(localName)) {
-                localMember.questionToken = ts.createNode(ts.SyntaxKind.QuestionToken);
-            }
-        });
-    });
 
     return collapseInterfaces(interfaces);
 
