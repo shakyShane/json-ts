@@ -1,5 +1,4 @@
 import * as ts from 'typescript';
-import {Set as ImmutableSet} from 'immutable';
 import {namedProp} from "./transformer";
 import {isEmptyArrayType, membersMatch} from "./util";
 
@@ -45,20 +44,20 @@ export function collapseInterfaces(interfaces: any[]): any[] {
     return interfaces.reduce((accInterfaces, current) => {
 
         const currentName = current.name.text;
-        const currentMemberNames = ImmutableSet(current.members.map(x => (x.name || x.label).text));
+        const currentMemberNames = new Set(current.members.map(x => (x.name || x.label).text));
         const matchingInterfaceIndex = accInterfaces.findIndex(x => (x.name || x.label).text === currentName);
 
         if (matchingInterfaceIndex === -1) {
             return accInterfaces.concat(current);
         }
 
-        return accInterfaces.map((int, index) => {
+        accInterfaces.forEach((int, index) => {
 
             if (index !== matchingInterfaceIndex) {
                 return int;
             }
 
-            const prevMemberNames = ImmutableSet(int.members.map(x => (x.name || x.label).text));
+            const prevMemberNames = new Set(int.members.map(x => (x.name || x.label).text));
 
             // if the current interface has less props than a previous one
             // we need to back-track and make the previous one optional
@@ -73,9 +72,10 @@ export function collapseInterfaces(interfaces: any[]): any[] {
 
             // Modify members based on missing props, union types etc
             modifyMembers(int.members, current.members);
-
-            return int;
         });
+
+        return accInterfaces;
+
     }, []);
 }
 
@@ -102,8 +102,8 @@ function modifyMembers(interfaceMembers, currentMembers) {
 
                 // already a union, so just push a new type
                 if (existingMember.type.kind === ts.SyntaxKind.UnionType) {
-                    const asSet = ImmutableSet(existingMember.type.types.map(x => x.kind));
-                    if (!asSet.contains(mem.type.kind)) {
+                    const asSet = new Set(existingMember.type.types.map(x => x.kind));
+                    if (!asSet.has(mem.type.kind)) {
                         existingMember.type.types.push(mem.type);
                         interfaceMembers[existingIndex] = existingMember;
                     }
