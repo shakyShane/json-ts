@@ -14,6 +14,7 @@
 |---|---|---|---|
 |simple literal types (number, string etc) |**YES**   |YES   |YES   |
 |array type, all elements of same kind |**YES**   |YES   |YES   |
+|merge multiple json files|**YES (cli, v1.6 & above)**   |NO   |NO   |
 |optional members | **YES** | YES | NO |
 |array union types | **YES**   |NO   |NO   |
 |recursive data structures ([see here](https://github.com/shakyShane/json-ts/blob/master/__tests__/magento/categories.json)) |**YES**   |NO   |NO   |
@@ -28,8 +29,11 @@
 # install
 npm install -g json-ts
 
-# run against JSON file
+# run against a single JSON file
 json-ts dir/myfile.json
+
+# run against multiple single JSON files (interfaces will be merged)
+json-ts api/resp1.json api/resp2.json
 ```
 
 ## Usage (CLI)
@@ -40,8 +44,11 @@ Later I will add support for Windows, reading data from network requests etc.
 ## piping via stdin
 curl https://jsonplaceholder.typicode.com/posts/1 | json-ts --stdin
 
-## reading json from disk
+## reading single json file from disk
 json-ts my-file.json
+
+## reading multiple json files from disk
+json-ts my-file.json my-other-file.json
 ```
 
 ... produces the following: 
