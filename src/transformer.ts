@@ -209,6 +209,10 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
         if (options.prefix) {
             return options.prefix + base;
         }
+        const qs = needsQuotes(base);
+        if (qs.needsQuotes) {
+            return `_` + base;
+        }
         return base;
     }
     function upper(string) {
@@ -220,6 +224,10 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
     function getArrayInterfaceItemName(input): string {
         if (options.prefix) {
             return pascalCase(`${options.prefix}_${input}_Item`);
+        }
+        const qs = needsQuotes(input);
+        if (qs.needsQuotes) {
+            return '_' + pascalCase(`${input}_Item`);
         }
         return pascalCase(`${input}_Item`)
     }
