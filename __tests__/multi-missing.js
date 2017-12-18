@@ -11,11 +11,11 @@ const json2 = `{
 
 const expected = `
 interface IRootObject {
+    pets?: string;
     name?: string;
-    pets?: string[];
 }
 `;
 
-it.only('multiple inputs - when ones missing', function() {
+it('multiple inputs - when one is missing in each', function() {
     expect(json2tsMulti([json2, json])).toEqual(expected.slice(1));
 });
