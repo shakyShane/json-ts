@@ -9,7 +9,7 @@ const json = `
 
 const expected = `
 interface RootObject {
-    '231 thing': _231ThingItem[];
+    '231thing': _231ThingItem[];
 }
 interface _231ThingItem {
     name?: string;
