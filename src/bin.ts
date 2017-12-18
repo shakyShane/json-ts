@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import minimist = require('minimist');
 import stdin = require('get-stdin');
-import {json2ts} from './';
+import {json2ts, json2tsMulti} from './';
 import {fromJS, OrderedSet} from 'immutable';
 import {join, parse, ParsedPath} from "path";
 import {existsSync, readFile, readFileSync} from "fs";
@@ -77,9 +77,10 @@ Or, provide path names:
                 console.log('    ', item.resolved.errors[0].error.message);
             })
         } else {
-            withoutErrors.forEach(item => {
-                console.log(json2ts(item.resolved.content, options));
+            const strings = withoutErrors.map(item => {
+                return item.resolved.content;
             });
+            console.log(json2tsMulti((strings as any), options));
         }
     }
 }
@@ -98,7 +99,7 @@ interface IResolvedInput {
 }
 
 function resolveInput(incoming: IIncomingInput, cwd): IResolvedInput {
-    const absolute = join(cwd, incoming.parsed.dir, incoming.parsed.base)
+    const absolute = join(cwd, incoming.parsed.dir, incoming.parsed.base);
     if (!existsSync(absolute)) {
         return {
             errors: [{

@@ -1,0 +1,9 @@
+{
+  "status": "success",
+  "cart": {
+    "basket": {
+      "type": "",
+      "tax_label": "(Ex VAT)"
+    }
+  }
+}
