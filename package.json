@@ -6,6 +6,7 @@
     "immutable": "^3.8.1",
     "minimist": "^1.2.0",
     "needsquotes": "^1.0.0",
+    "transducers-js": "^0.4.174",
     "typescript": "^2.3.2"
   },
   "scripts": {
