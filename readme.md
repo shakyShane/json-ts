@@ -16,11 +16,11 @@
 |array type, all elements of same kind |**YES**   |YES   |YES   |
 |merge multiple json files|**YES (cli, v1.6 & above)**   |NO   |NO   |
 |optional members | **YES** | YES | NO |
-|array union types | **YES**   |NO   |NO   |
+|array union types | **YES**   |YES   |NO   |
 |recursive data structures ([see here](https://github.com/shakyShane/json-ts/blob/master/__tests__/magento/categories.json)) |**YES**   |NO   |NO   |
-|nested type literals (to account for invalid [interface names](https://github.com/shakyShane/json-ts/blob/master/__tests__/swagger/schema.json)) |**YES**   |NO   |NO   |
+|nested type literals (to account for invalid [interface names](https://github.com/shakyShane/json-ts/blob/master/__tests__/swagger/schema.json)) |**YES**   |YES   |NO   |
 |output @flow types |**YES**   |NO   |NO   |
-|Website |**[YES](https://shakyshane.github.io/json-ts/)**   |NO   |[YES](http://json2ts.com/)   |
+|Website |**[YES](https://shakyshane.github.io/json-ts/)**   |[YES](http://www.jsontots.com/)   |[YES](http://json2ts.com/)   |
 |CLI |**YES**   |NO   |NO   |
 |API |**YES**   |YES   |NO   |
  
