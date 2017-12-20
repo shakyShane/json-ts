@@ -1,6 +1,7 @@
 {
   "name": "json-ts",
   "version": "1.6.2",
+  "description": "Automatically generate Typescript Definition files or Flow types from JSON input",
   "dependencies": {
     "get-stdin": "^5.0.1",
     "immutable": "^3.8.1",
@@ -9,6 +10,13 @@
     "transducers-js": "^0.4.174",
     "typescript": "^2.3.2"
   },
+  "keywords": [
+    "json",
+    "typescript",
+    "flow",
+    "types",
+    "interfaces"
+  ],
   "scripts": {
     "test": "tsc && jest",
     "prepublish": "npm test"
