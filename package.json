@@ -18,7 +18,7 @@
     "interfaces"
   ],
   "scripts": {
-    "test": "tsc && jest",
+    "test": "tsc && jest --runInBand",
     "prepublish": "npm test"
   },
   "bin": {
