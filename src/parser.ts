@@ -11,10 +11,10 @@ export interface ParsedNode {
     interfaceCandidate?: boolean
 }
 
-function walk(sourceFile: ts.SourceFile): ParsedNode[] {
+function walk(sourceFile: ts.SourceFile, initial = []): ParsedNode[] {
 
-    const stack : Array<ParsedNode> = [];
-    const elementStack : Array<ParsedNode> = [];
+    const stack : Array<ParsedNode> = initial.slice();
+    const elementStack : Array<ParsedNode> = initial.slice();
 
     function push(element) {
         const parent = elementStack[elementStack.length - 1];
@@ -140,11 +140,28 @@ function walk(sourceFile: ts.SourceFile): ParsedNode[] {
 
 export function parse(string, options: JsonTsOptions): any[] {
     const input = `const ROOTOBJ = ${string}`;
+    let stack;
     let sourceFile : ts.SourceFile = ts.createSourceFile('json.ts', input, ts.ScriptTarget.ES2015, /*setParentNodes */ true);
     // delint it
     const _json = sourceFile.statements[0] as any;
+    const init = _json.declarationList.declarations[0].initializer;
+
+    switch (init.kind) {
+        case ts.SyntaxKind.ArrayLiteralExpression: {
+            // console.log('isARRA', init.elements);
+            stack = walk(init.elements, [{
+                kind: ts.SyntaxKind.ArrayLiteralExpression,
+                _kind: `ArrayLiteralExpression`,
+                name: options.rootName,
+                body: [],
+            }]);
+            break;
+        }
+        default: stack = walk(init.properties);
+    }
+
     // console.log(sourceFile.statements[0].declarationList.declarations[0].initializer.properties);
     // elementStack.push({name: 'root', body: []});
-    const stack = walk(_json.declarationList.declarations[0].initializer.properties);
+    // const stack = walk(_json.declarationList.declarations[0].initializer.properties);
     return stack;
 }
