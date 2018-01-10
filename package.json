@@ -1,6 +1,6 @@
 {
   "name": "json-ts",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "Automatically generate Typescript Definition files or Flow types from JSON input",
   "dependencies": {
     "get-stdin": "^5.0.1",
