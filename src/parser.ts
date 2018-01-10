@@ -138,7 +138,7 @@ function walk(sourceFile: ts.SourceFile, initial = []): ParsedNode[] {
     }
 }
 
-export function parse(string, options: JsonTsOptions): any[] {
+export function parse(string, options: JsonTsOptions): {stack: any[], inputKind: ts.SyntaxKind} {
     const input = `const ROOTOBJ = ${string}`;
     let stack;
     let sourceFile : ts.SourceFile = ts.createSourceFile('json.ts', input, ts.ScriptTarget.ES2015, /*setParentNodes */ true);
@@ -147,8 +147,17 @@ export function parse(string, options: JsonTsOptions): any[] {
     const init = _json.declarationList.declarations[0].initializer;
 
     switch (init.kind) {
+        case ts.SyntaxKind.TrueKeyword:
+        case ts.SyntaxKind.FalseKeyword:
+        case ts.SyntaxKind.NullKeyword:
+        case ts.SyntaxKind.StringLiteral:
+        case ts.SyntaxKind.NumericLiteral: {
+            stack = [{
+                kind: init.kind,
+            }];
+            break;
+        }
         case ts.SyntaxKind.ArrayLiteralExpression: {
-            // console.log('isARRA', init.elements);
             stack = walk(init.elements, [{
                 kind: ts.SyntaxKind.ArrayLiteralExpression,
                 _kind: `ArrayLiteralExpression`,
@@ -160,8 +169,5 @@ export function parse(string, options: JsonTsOptions): any[] {
         default: stack = walk(init.properties);
     }
 
-    // console.log(sourceFile.statements[0].declarationList.declarations[0].initializer.properties);
-    // elementStack.push({name: 'root', body: []});
-    // const stack = walk(_json.declarationList.declarations[0].initializer.properties);
-    return stack;
+    return {stack, inputKind: init.kind};
 }

@@ -1,5 +1,6 @@
+import * as ts from 'typescript';
 import {parse} from "./parser";
-import {print} from "./printer";
+import {print, printLiteral} from "./printer";
 import {transform} from "./transformer";
 import {collapseInterfaces} from "./collapse-interfaces";
 
@@ -16,30 +17,45 @@ export const defaults = {
 };
 
 export function json2ts(validJsonString: string, options: JsonTsOptions = {}): string {
-    const merged = {
+    const mergedOptions = {
         ...defaults,
         ...options
     };
-    const parsed = parse(validJsonString, merged);
-    const transformed = transform(parsed, merged);
-    const flattened = collapseInterfaces(transformed);
-    const printed = print(flattened, merged);
-    return printed;
+    const {stack, inputKind} = parse(validJsonString, mergedOptions);
+    switch (inputKind) {
+        case ts.SyntaxKind.ArrayLiteralExpression:
+        case ts.SyntaxKind.ObjectLiteralExpression: {
+            const transformed = transform(stack, mergedOptions);
+            const flattened = collapseInterfaces(transformed);
+            const printed = print(flattened, inputKind, mergedOptions);
+            return printed;
+        }
+        default: {
+            const printed = printLiteral(stack[0], inputKind, mergedOptions);
+            return printed;
+        }
+    }
 }
 
 export function json2tsMulti(validJsonStrings: string[], options: JsonTsOptions = {}): string {
-    const merged = {
+    const inputKinds = new Set([]);
+    const mergedOptions = {
         ...defaults,
         ...options
     };
     const joined = validJsonStrings.reduce((all, json) => {
-        const parsed = parse(json, merged);
-        const transformed = transform(parsed, merged);
+        const {stack, inputKind} = parse(json, mergedOptions);
+        inputKinds.add(inputKind);
+        const transformed = transform(stack, mergedOptions);
         return all.concat(transformed);
     }, []);
 
+    if (inputKinds.size > 1) {
+        // todo handle mixed types
+    }
+
     const flattened = collapseInterfaces(joined);
-    const printed = print(flattened, merged);
+    const printed = print(flattened, Array.from(inputKinds)[0], mergedOptions);
     return printed;
 }
 

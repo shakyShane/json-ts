@@ -9,6 +9,6 @@ const expected = `
 type IRootObject = number[];
 `;
 
-it.only('works with top level array', function() {
+it('works with top level simple array', function() {
     expect(json2ts(json)).toEqual(expected.slice(1));
 });

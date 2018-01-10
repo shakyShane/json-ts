@@ -17,6 +17,7 @@
 |merge multiple json files|**YES (cli, v1.6 & above)**   |NO   |NO   |
 |optional members | **YES** | YES | NO |
 |array union types | **YES**   |YES   |NO   |
+|correct handling of top-level values (strings, arrays, numbers etc) |**YES**   |NO   |NO   |
 |recursive data structures ([see here](https://github.com/shakyShane/json-ts/blob/master/__tests__/magento/categories.json)) |**YES**   |NO   |NO   |
 |nested type literals (to account for invalid [interface names](https://github.com/shakyShane/json-ts/blob/master/__tests__/swagger/schema.json)) |**YES**   |YES   |NO   |
 |output @flow types |**YES**   |NO   |NO   |

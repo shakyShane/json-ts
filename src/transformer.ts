@@ -23,7 +23,7 @@ export interface InterfaceNode {
     members: MemberNode[];
 }
 
-const kindMap = {
+export const kindMap = {
     [ts.SyntaxKind.NullKeyword]: ts.SyntaxKind.NullKeyword,
     [ts.SyntaxKind.StringLiteral]: ts.SyntaxKind.StringKeyword,
     [ts.SyntaxKind.FirstLiteralToken]: ts.SyntaxKind.NumberKeyword,
@@ -57,21 +57,6 @@ const safeUnions = ImmutableSet([
 ]);
 
 export function transform(stack: ParsedNode[], options: JsonTsOptions): InterfaceNode[] {
-
-
-    if (stack.length === 1 && stack[0].kind === ts.SyntaxKind.ArrayLiteralExpression) {
-        // const newNode : any = ts.createNode(ts.SyntaxKind.TypeAliasDeclaration);
-        // newNode.modifiers = [ts.createToken(ts.SyntaxKind.ExportKeyword)];
-        // newNode.type = ts.createTypeLiteralNode(x.members);
-        // newNode.name = options.rootName;
-        // console.log(stack);
-        //     kind: ts.SyntaxKind.ObjectLiteralExpression,
-        //     _kind: 'ObjectLiteralExpression',
-        //     name: options.rootName,
-        //     interfaceCandidate: true,
-        //     body: stack
-        // }];
-    }
 
     const wrapper = [{
         kind: ts.SyntaxKind.ObjectLiteralExpression,
@@ -214,7 +199,7 @@ export function transform(stack: ParsedNode[], options: JsonTsOptions): Interfac
 
             return item;
         } else {
-            console.log('Not creating union as this array contains mixed complexr types');
+            // console.log('Not creating union as this array contains mixed complexr types');
         }
 
         return ts.createNode(ts.SyntaxKind.AnyKeyword);
