@@ -17,7 +17,7 @@
 |merge multiple json files|**YES (cli, v1.6 & above)**   |NO   |NO   |
 |optional members | **YES** | YES | NO |
 |array union types | **YES**   |YES   |NO   |
-|correct handling of top-level values ([strings](https://shakyshane.github.io/json-ts/#src=%22some-api-token-as-string%22), [arrays](https://shakyshane.github.io/json-ts/#src=%5B1%2C%202%2C%203%5D), [arrays of objects](https://shakyshane.github.io/json-ts/#src=%5B%0A%20%20%7B%22name%22%3A%20%22shane%22%7D%2C%0A%20%20%7B%22name%22%3A%20%22kittie%22%2C%20%22age%22%3A%2030%7D%0A%5D) [numbers](https://shakyshane.github.io/json-ts/#src=1) etc) |**YES**   |NO   |NO   |
+|correct handling of top-level values ([strings](https://shakyshane.github.io/json-ts/#src=%22some-api-token-as-string%22), [arrays](https://shakyshane.github.io/json-ts/#src=%5B1%2C%202%2C%203%5D), [arrays of objects](https://shakyshane.github.io/json-ts/#src=%5B%0A%20%20%7B%22name%22%3A%20%22shane%22%7D%2C%0A%20%20%7B%22name%22%3A%20%22kittie%22%2C%20%22age%22%3A%2030%7D%0A%5D), [numbers](https://shakyshane.github.io/json-ts/#src=1) etc) |**YES**   |NO   |NO   |
 |recursive data structures ([see here](https://github.com/shakyShane/json-ts/blob/master/__tests__/magento/categories.json)) |**YES**   |NO   |NO   |
 |nested type literals (to account for invalid [interface names](https://github.com/shakyShane/json-ts/blob/master/__tests__/swagger/schema.json)) |**YES**   |YES   |NO   |
 |output @flow types |**YES**   |NO   |NO   |
