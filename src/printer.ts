@@ -41,7 +41,7 @@ export function print(interfaceNodes, inputKind: ts.SyntaxKind, options: JsonTsO
         });
         const ns = ts.createModuleDeclaration(
             undefined,
-            [ts.createToken(ts.SyntaxKind.DeclareKeyword)],
+            [ts.createToken(ts.SyntaxKind.ExportKeyword), ts.createToken(ts.SyntaxKind.DeclareKeyword)],
             ts.createIdentifier(options.namespace),
             ts.createModuleBlock(interfaceNodes),
             ts.NodeFlags.Namespace
